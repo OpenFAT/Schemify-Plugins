@@ -1,6 +1,6 @@
 # Schemify SDK
 
-Everything you need to build plugins and themes for [Schemify](https://github.com/OpenFAT), the schematic editor for analog and mixed-signal IC design. The editor itself is a separate product; this repository holds the open parts it is built on.
+Everything you need to build plugins and themes for [Schemify](https://github.com/Scouren), the schematic editor for analog and mixed-signal IC design. The editor itself is a separate product; this repository holds the open parts it is built on.
 
 ## What changed (November 2026)
 

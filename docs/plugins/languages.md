@@ -49,11 +49,11 @@ The templates reach their library by a path inside this checkout. In your own re
 
 | Language | How |
 |---|---|
-| Rust | `schemify-abi = { git = "https://github.com/OpenFAT/Schemify-Plugins", rev = "<commit>", features = ["guest"] }` ([repository.md](repository.md)) |
+| Rust | `schemify-abi = { git = "https://github.com/Scouren/Schemify-Plugins", rev = "<commit>", features = ["guest"] }` ([repository.md](repository.md)) |
 | C, C++, Nim, D, Swift | Vendor `crates/protocol/abi/sdk/c/schemify.h` from a pinned revision, or add Schemify as a git submodule, and point the include path at it |
-| Zig | `zig fetch --save=schemify git+https://github.com/OpenFAT/Schemify-Plugins#<commit>`. `build.zig` keeps `b.dependency("schemify", .{}).path("crates/protocol/abi/sdk/zig/schemify.zig")` |
+| Zig | `zig fetch --save=schemify git+https://github.com/Scouren/Schemify-Plugins#<commit>`. `build.zig` keeps `b.dependency("schemify", .{}).path("crates/protocol/abi/sdk/zig/schemify.zig")` |
 | Odin | Vendor `crates/protocol/abi/sdk/odin` and point `-collection:schemify=` at it |
-| Go | Delete the `replace` line in `go.mod`, then `go get github.com/OpenFAT/Schemify-Plugins/crates/protocol/abi/sdk/go@<commit>` |
+| Go | Delete the `replace` line in `go.mod`, then `go get github.com/Scouren/Schemify-Plugins/crates/protocol/abi/sdk/go@<commit>` |
 | TypeScript | npm can't install a git subdirectory: vendor `crates/protocol/abi/sdk/assemblyscript` or add a submodule, and point the `file:` dependency at it |
 
 ## Check a module

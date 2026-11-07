@@ -54,8 +54,8 @@ crate-type = ["cdylib", "rlib"]   # cdylib: the guest; rlib: native tests
 resolver = "3"
 
 [workspace.dependencies]
-schemify-abi = { git = "https://github.com/OpenFAT/Schemify-Plugins", rev = "<full commit sha>", features = ["guest"] }
-schemify-format = { git = "https://github.com/OpenFAT/Schemify-Plugins", rev = "<full commit sha>" }
+schemify-abi = { git = "https://github.com/Scouren/Schemify-Plugins", rev = "<full commit sha>", features = ["guest"] }
+schemify-format = { git = "https://github.com/Scouren/Schemify-Plugins", rev = "<full commit sha>" }
 
 [dependencies]
 schemify-abi.workspace = true
