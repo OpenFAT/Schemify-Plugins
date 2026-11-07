@@ -11,12 +11,11 @@ A Schemify plugin is a wasm module ([plugin ABI](../spec/plugin-abi.md)) that li
 
 ## Examples
 
-Three plugins live in their own repositories under the OpenFAT organization. Each is a complete repository that follows these pages:
+Two plugins live in their own repositories under the OpenFAT organization. Each is a complete repository that follows these pages:
 
 | Plugin | Repository | Shows |
 |---|---|---|
 | `interop` | [Interoperate](https://github.com/OpenFAT/Interoperate) | a large guest plus a native command line (`schemify-interop`) built from the same crate, fuzzing, a nightly differential against a real tool (xschem) |
-| `cktimg` | [cktImg](https://github.com/OpenFAT/cktImg) | a plugin that links a native engine (Zig, through its C ABI) into the wasm module; the engine's C ABI and LaTeX package are secondary interfaces |
 | `gmid-lut` | [GmId-Visualizer](https://github.com/OpenFAT/GmId-Visualizer) | pure expression functions for docs pages (`functions` contributions); the C++ library and CLI are a secondary interface |
 
 The bundled default UI ([ui/default-plugin](../../ui/default-plugin)) is a plugin too, but it ships inside the editor and builds in this repository.
