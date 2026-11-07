@@ -16,6 +16,6 @@ Two plugins live in their own repositories under the OpenFAT organization. Each 
 | Plugin | Repository | Shows |
 |---|---|---|
 | `interop` | [Interoperate](https://github.com/OpenFAT/Interoperate) | a large guest plus a native command line (`schemify-interop`) built from the same crate, fuzzing, a nightly differential against a real tool (xschem) |
-| `gmid-lut` | [GmId-Visualizer](https://github.com/OpenFAT/GmId-Visualizer) | pure expression functions for docs pages (`functions` contributions); the C++ library and CLI are a secondary interface |
+| `gmid-lut` | [GmIdW](https://github.com/OpenFAT/GmIdW) | pure expression functions for docs pages (`functions` contributions); the C++ library and CLI are a secondary interface |
 
 The bundled default UI ([ui/default-plugin](../../ui/default-plugin)) is a plugin too, but it ships inside the editor and builds in this repository.

@@ -11,7 +11,7 @@ Tag a release with a version (`git tag v0.3.0 && git push --tags`). Users pin it
 ```lua
 -- init.lua
 schemify.pack.add {
-  { src = "https://github.com/OpenFAT/GmId-Visualizer", version = "v0.3.0",
+  { src = "https://github.com/OpenFAT/GmIdW", version = "v0.3.0",
     grant = { "read_project", "write_project", "spawn:ngspice" } },
 }
 ```
