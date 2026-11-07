@@ -305,6 +305,130 @@ style dock-note
   pad 8
   pad-y 8
 
+# The agent chat (the `agent` pane; chat spec). The consent buttons inside it are core-owned
+# (`core.button`, `core.primary`); everything else here a theme restyles.
+style chat-pane
+  bg f4f4f4
+  dir column
+  grow 1
+
+style chat-off
+  fg 333333
+  pad 10
+  pad-y 10
+
+style chat-head
+  dir row
+  gap 6
+  pad 8
+  pad-y 4
+
+style chat-privacy
+  fg 1a3a8a
+  font 11
+
+style chat-meter
+  fg 555555
+  font 11
+
+style chat-log
+  dir column
+  gap 6
+  pad 8
+  grow 1
+
+style chat-user
+  bg e6e6e6
+  dir column
+  gap 4
+  pad 8
+  pad-y 6
+  radius 4
+
+style chat-user-text
+  fg 111111
+
+style chat-text
+  fg 111111
+
+style chat-step
+  fg 333333
+  hover-bg e0e0e0
+  font 12
+  pad 4
+
+style chat-step-error
+  fg 8a1a1a
+  hover-bg e0e0e0
+  font 12
+  pad 4
+
+style chat-detail
+  fg 333333
+  bg ececec
+  font 11
+  pad 6
+
+style chat-card
+  bg ffffff
+  border 1
+  border-color c8c8c8
+  radius 4
+  dir column
+  gap 6
+  pad 8
+  pad-y 6
+
+style chat-card-title
+  fg 111111
+  font 12
+
+style chat-card-state
+  fg 555555
+  font 11
+
+style chat-diff
+  fg 222222
+  font 11
+
+style chat-buttons
+  dir row
+  gap 6
+
+style chat-note
+  fg 555555
+  font 12
+
+style chat-foot
+  dir column
+  gap 4
+  pad 8
+  pad-y 6
+
+style chat-task
+  fg 333333
+  font 11
+
+style chat-working
+  fg 555555
+  font 11
+
+style chat-stop
+  fg 111111
+  hover-bg cfcfcf
+  border 1
+  border-color a0a0a0
+  radius 3
+  pad 8
+
+style chat-input
+  fg 111111
+  bg ffffff
+  width 330
+  height 28
+  pad 6
+  pad-y 6
+
 style bottom-bar
   bg e0e0e0
   dir row
@@ -821,6 +945,10 @@ node options.settings item
   label "Settings..."
   command view.settings
   accel Ctrl+,
+node options.store item
+  parent menu.options
+  label "Store..."
+  command view.store
 node options.sep_settings separator
   parent menu.options
 node options.color_postscript_svg item
@@ -958,6 +1086,19 @@ node view.fullscreen item
   label Fullscreen
   command view.fullscreen
   accel "\\"
+node view.zen item
+  parent menu.view
+  label "Zen mode"
+  command view.zen
+node view.layout_save item
+  parent menu.view
+  label "Save layout as..."
+  command view.layout_save
+node view.palette item
+  parent menu.view
+  label "Command palette..."
+  command view.palette
+  accel F1
 node view.zoom_full item
   parent menu.view
   label "Zoom Full"
@@ -1834,8 +1975,8 @@ node activity.explorer button
 node activity.packages button
   parent activity
   label Packages
-  command view.pane.packages
-  tooltip "Packages: plugins, themes, PDKs, simulators"
+  command view.store
+  tooltip "Store: plugins and themes, installed and available"
   icon "M2 2 H7 V7 H2 Z M9 2 H14 V7 H9 Z M2 9 H7 V14 H2 Z M9 9 H14 V14 H9 Z"
   style activity-button
 node activity.pdk button
@@ -1844,6 +1985,13 @@ node activity.pdk button
   command view.pane.pdk
   tooltip "PDKs: install, pin and switch kits"
   icon "M8 1.5 L14.5 5 L8 8.5 L1.5 5 Z M1.5 8 L8 11.5 L14.5 8 M1.5 11 L8 14.5 L14.5 11"
+  style activity-button
+node activity.sims button
+  parent activity
+  label Simulators
+  command view.pane.sims
+  tooltip "Simulators: download, pick or reach one over SSH"
+  icon "M1.5 8 L4 8 L5.5 3 L8 13 L10.5 5 L12 8 L14.5 8"
   style activity-button
 node activity.checks button
   parent activity
@@ -2304,6 +2452,139 @@ node dialog.settings.done button
   command settings.done
   style dialog-button
 
+# --- store overlay (`view.store`, the Packages icon; store spec §4). This UI declares the frame; the
+# app adds the category chips under `dialog.store.cats`, the sections and rows under
+# `dialog.store.list` and the picked package's page under `dialog.store.detail` (classes store-*).
+# The install strip and the permission dialog are the core's (`core.store.*`, `core.grants`). ----
+
+node dialog.store dialog
+  label Store
+  style store
+node dialog.store.head panel
+  parent dialog.store
+  style store-head
+node dialog.store.tabs tabs
+  parent dialog.store.head
+  style store-tabs
+node dialog.store.tab.plugin tab
+  parent dialog.store.tabs
+  label Plugins
+  command store.tab.plugin
+  style store-tab
+node dialog.store.tab.theme tab
+  parent dialog.store.tabs
+  label Themes
+  command store.tab.theme
+  style store-tab
+node dialog.store.head.spacer panel
+  parent dialog.store.head
+  style spacer
+node dialog.store.counts label
+  parent dialog.store.head
+  style store-counts
+node dialog.store.x button
+  parent dialog.store.head
+  label Close
+  command store.close
+  tooltip "Close (Escape)"
+  icon "M4 4 L12 12 M12 4 L4 12"
+  style settings-x
+node dialog.store.body panel
+  parent dialog.store
+  style store-body
+node dialog.store.side panel
+  parent dialog.store.body
+  style store-side
+node dialog.store.search text_input
+  parent dialog.store.side
+  input store.search
+  tooltip "Search packages by name, description, publisher or category"
+  style store-search
+node dialog.store.cats panel
+  parent dialog.store.side
+  style store-cats
+node dialog.store.list scroll
+  parent dialog.store.side
+  style store-list
+node dialog.store.detail scroll
+  parent dialog.store.body
+  style store-detail
+node dialog.store.foot panel
+  parent dialog.store
+  style settings-foot
+node dialog.store.note label
+  parent dialog.store.foot
+  style settings-hint
+
+# --- command palette (`view.palette`, F1). This UI declares the frame; the app
+# adds the ranked rows under `dialog.palette.list` as `item` nodes (title, current key as `accel`,
+# command `palette.run.<row>`; classes palette-row, palette-row-top, palette-empty). Enter in the
+# search field runs the first row. ---------------------------------------------------------------
+
+node dialog.palette dialog
+  label "Command palette"
+  style palette
+node dialog.palette.search text_input
+  parent dialog.palette
+  input palette.search
+  command palette.run
+  tooltip "Type to search every command; Enter runs the first"
+  style palette-search
+node dialog.palette.box scroll
+  parent dialog.palette
+  style palette-list
+node dialog.palette.list panel
+  parent dialog.palette.box
+  style dialog-list
+node dialog.palette.count label
+  parent dialog.palette
+  style palette-count
+
+style palette
+  bg ececec
+  dir column
+  pad 8
+  pad-y 8
+  gap 6
+  border 1
+  border-color 404040
+  min-width 620
+
+style palette-search
+  width 604
+  pad 8
+  pad-y 5
+  border 1
+
+style palette-list
+  dir column
+  height 420
+  min-width 604
+
+style palette-row
+  font 12
+  pad 8
+  height 22
+  hover-bg d0d0d0
+  accel-fg 505050
+
+style palette-row-top
+  font 12
+  pad 8
+  height 22
+  bg c3d3f0
+  hover-bg d0d0d0
+  accel-fg 404040
+
+style palette-empty
+  font 12
+  fg 606060
+  pad 8
+
+style palette-count
+  font 11
+  fg 505050
+
 # --- project trust: drawn by the core layer (`core.trust`), never by a plugin (shell `CORE_LAYER`). --
 
 style dialog-list
@@ -2520,6 +2801,169 @@ style settings-theme-on
   border 2
   bg 90ee90
   radius 3
+
+# Store overlay: a wide modal, the list on the left, the picked package's page on the right.
+style store
+  bg ececec
+  dir column
+  pad 0
+  pad-y 0
+  gap 0
+  border 1
+  border-color 404040
+  min-width 1180
+
+style store-head
+  bg d9d9d9
+  dir row
+  height 36
+  pad 10
+  gap 12
+
+style store-tabs
+  bg d9d9d9
+  dir row
+  gap 2
+
+style store-tab
+  pad 12
+  height 22
+  border 0
+  active-bg ffffff
+
+style store-counts
+  font 12
+  fg 404040
+
+style store-body
+  dir row
+  stretch 1
+  height 600
+  gap 0
+
+style store-side
+  bg e0e0e0
+  dir column
+  width 380
+  pad 8
+  pad-y 8
+  gap 6
+
+style store-search
+  width 362
+  pad 8
+  pad-y 5
+  border 1
+
+style store-cats
+  dir column
+  gap 4
+
+style store-cats-row
+  dir row
+  gap 4
+
+style store-chip
+  pad 8
+  height 20
+  font 11
+  border 1
+  radius 10
+  bg f4f4f4
+
+style store-chip-on
+  pad 8
+  height 20
+  font 11
+  border 1
+  radius 10
+  bg c3d3f0
+  active-bg c3d3f0
+
+style store-list
+  dir column
+  grow 1
+  gap 2
+
+style store-section
+  font 11
+  pad-y 6
+  fg 505050
+
+style store-item
+  font 12
+  pad 8
+  pad-y 6
+  hover-bg d0d0d0
+
+style store-item-on
+  font 12
+  pad 8
+  pad-y 6
+  bg c3c3c3
+
+style store-hint
+  font 12
+  fg 606060
+  pad 12
+
+style store-detail
+  dir column
+  grow 1
+  pad 20
+  pad-y 16
+  gap 12
+
+style store-d-head
+  dir row
+  gap 16
+
+style store-d-icon
+  width 72
+  height 72
+  font 26
+  bg 2f6fd0
+  fg ffffff
+  radius 8
+
+style store-d-titles
+  dir column
+  grow 1
+  gap 6
+
+style store-d-name
+  font 22
+
+style store-d-meta
+  font 12
+  fg 505050
+
+style store-d-summary
+  font 13
+
+style store-d-body
+  dir row
+  gap 20
+
+style store-d-readme
+  width 470
+  font 13
+
+style store-d-side
+  dir column
+  width 240
+  gap 4
+
+style store-f-title
+  font 11
+  fg 505050
+  pad-y 6
+
+style store-f-row
+  font 12
+
+style store-f-code
+  font 11
 
 style settings-foot
   bg d9d9d9

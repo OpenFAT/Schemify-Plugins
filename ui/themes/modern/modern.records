@@ -242,6 +242,72 @@ style dock-pane
 style dock-note
   fg @muted
 
+style chat-pane
+  bg @surface
+
+style chat-off
+  fg @text
+
+style chat-privacy
+  fg @accent-fg
+
+style chat-meter
+  fg @muted
+
+style chat-user
+  bg @raised
+  border 1
+  border-color @line
+
+style chat-user-text
+  fg @bright
+
+style chat-text
+  fg @text
+
+style chat-step
+  fg @text-2
+  hover-bg @hover
+
+style chat-step-error
+  fg @error
+  hover-bg @hover
+
+style chat-detail
+  fg @text-2
+  bg @bg
+
+style chat-card
+  bg @bg
+  border-color @line
+
+style chat-card-title
+  fg @text
+
+style chat-card-state
+  fg @muted
+
+style chat-diff
+  fg @text-2
+
+style chat-note
+  fg @muted
+
+style chat-task
+  fg @text-2
+
+style chat-working
+  fg @muted
+
+style chat-stop
+  fg @text
+  hover-bg @hover
+  border-color @line
+
+style chat-input
+  fg @text
+  bg @raised
+
 style bottom-bar
   bg @raised
 
@@ -482,3 +548,119 @@ style settings-theme-on
 
 style settings-foot
   bg @surface
+
+# --- command palette (VS Code's quick pick in the house look: a raised panel, the top row accented) --
+
+style palette
+  bg @surface
+  border-color @line
+  radius 8
+
+style palette-search
+  bg @bg
+  fg @text
+  border-color @line
+  radius 4
+
+style palette-row
+  bg @surface
+  fg @text
+  hover-bg @hover
+  accel-fg @muted
+
+style palette-row-top
+  bg @accent-bg
+  fg @bright
+  hover-bg @hover
+  accel-fg @text-2
+
+style palette-empty
+  fg @muted
+
+style palette-count
+  fg @muted
+
+# --- store overlay (marketplace mockups market-4..7: raised panel, accent chips) -----------------
+
+style store
+  bg @surface
+  border-color @line
+  radius 8
+
+style store-head
+  bg @surface
+
+style store-tabs
+  bg @surface
+
+style store-tab
+  bg @surface
+  fg @muted
+  active-bg @surface
+  active-fg @bright
+
+style store-counts
+  fg @muted
+
+style store-side
+  bg @surface
+
+style store-search
+  bg @bg
+  border-color @line
+  radius 4
+
+style store-chip
+  bg @raised
+  fg @text-2
+  border-color @line
+
+style store-chip-on
+  bg @accent-bg
+  active-bg @accent-bg
+  fg @bright
+  active-fg @bright
+  border-color @accent-fg
+
+style store-section
+  fg @muted
+
+style store-item
+  bg @surface
+  fg @text
+  hover-bg @hover
+
+style store-item-on
+  bg @active
+  fg @bright
+
+style store-hint
+  fg @muted
+
+style store-detail
+  bg @bg
+
+style store-d-icon
+  bg @accent-bg
+  fg @bright
+
+style store-d-name
+  fg @bright
+
+style store-d-meta
+  fg @muted
+
+style store-d-summary
+  fg @text-2
+
+style store-d-readme
+  fg @text
+
+style store-f-title
+  fg @muted
+
+style store-f-row
+  fg @text-2
+
+style store-f-code
+  fg @text-2
