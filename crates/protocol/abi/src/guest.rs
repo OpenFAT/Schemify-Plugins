@@ -21,12 +21,13 @@
 //!
 //! This is the crate's only module with unsafe code: the extern import block (`sys`:
 //! `table_len`, `table_epoch`, `read_column`, `read_strings`, `eval`, `log`, `fs_read`,
-//! `fs_list`, `fs_write`, `fs_remove`, `spawn`, `fetch`, `clipboard_get`, `clipboard_set`)
-//! and the calls into it that hand the host a pointer into our own memory.
+//! `fs_list`, `fs_write`, `fs_remove`, `spawn`, `fetch`, `clipboard_get`, `clipboard_set`,
+//! `licensed`) and the calls into it that hand the host a pointer into our own memory.
 //!
 //! Contents:
 //! - `pub struct Host`: `len`, `is_empty`, `epoch`, `column`, `strings`, `eval`, `log`, `fs_read`,
-//!   `fs_list`, `fs_write`, `fs_remove`, `spawn`, `fetch`, `clipboard_get`, `clipboard_set`
+//!   `fs_list`, `fs_write`, `fs_remove`, `spawn`, `fetch`, `clipboard_get`, `clipboard_set`,
+//!   `licensed`
 //! - `export!` (re-exported), `pub fn no_functions(..) -> Result<(), Code>`
 //! - hidden, for `export!`: `__alloc`, `__on_event`, `__call`
 
@@ -72,6 +73,7 @@ mod sys {
         pub fn fetch(url: u32, url_len: u32, body: u32, body_len: u32) -> i32;
         pub safe fn clipboard_get() -> i32;
         pub fn clipboard_set(ptr: u32, len: u32) -> i32;
+        pub fn licensed(ptr: u32, len: u32) -> i32;
     }
 }
 
@@ -366,6 +368,17 @@ impl Host {
         let text = text.as_bytes();
         // SAFETY: the host only reads the given byte range.
         Code::check(unsafe { sys::clipboard_set(addr(text), len32(text)) })
+    }
+
+    /// Whether the user holds a valid entitlement to `sku`, the SKU this plugin's package is
+    /// sold under (the core verified it at load: store spec §8). Any other SKU, a refunded or
+    /// expired entitlement, and a call outside an event are `false`. Needs no grant and no
+    /// network; the plugin never sees the entitlement file.
+    #[must_use]
+    pub fn licensed(&self, sku: &str) -> bool {
+        let sku = sku.as_bytes();
+        // SAFETY: the host only reads the given byte range.
+        unsafe { sys::licensed(addr(sku), len32(sku)) == 1 }
     }
 }
 

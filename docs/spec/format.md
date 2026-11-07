@@ -154,7 +154,7 @@ Document order is preserved.
 | `config <name>` | `order <impl>…`, `cell <cellref> <impl>` (repeatable), `inst <path> <impl>` (repeatable) | D11a impl selection. |
 | `sweep <name>` | `var <v>`, and one of `values <expr>…` / `lin <from> <to> <n>` / `log <from> <to> <n>` | `lin`/`log` bounds are constants, `n` in `1..=65536` (run.md §2). |
 | `montecarlo <name>` | `samples <n>` (required), `seed <n>` (default 0) | Varies every var with `dist` (run.md §3). |
-| `optimize <name>` | `algo random\|nelder-mead` (default `nelder-mead`), `goal <output> min\|max\|target <expr> [weight <w>]` (repeatable; weight default 1), `vary <var>` (repeatable; bounds come from the var), `config <name>` and `corner <name>` (repeatable; every candidate runs at each pair, default the bench's), `budget <n>` (default 100), `seed <n>` (default 1) | run.md §6. |
+| `optimize <name>` | `algo random\|nelder-mead\|maximin\|mincost` (default `nelder-mead`), `goal <output> min\|max\|target <expr> [weight <w>]` (repeatable; weight default 1), `vary <var>` (repeatable; bounds come from the var), `config <name>` and `corner <name>` (repeatable; every candidate runs at each pair, default the bench's), `budget <n>` (default 100), `seed <n>` (default 1), `yield <min> [<confidence>]` (`mincost`) | run.md §6. |
 | `output <name> <expr>` | `unit <u>`, `analysis tran\|ac\|dc\|op`, `vs <output>` | Calculator-mode expression over each job's raw file, reduced to one number (run.md §4). `analysis` names the dataset the output reads and `vs` asks for a plot of this output against another across the run's jobs; both are read by tools — the Virtuoso export maps them to ADE signal letters and OCEAN `waveVsWave` (interop.md §9.1, §9.6) — while the core run keeps run.md §4's dataset rule and draws no plot for them. |
 | `spec <output>` | `min <expr>`, `max <expr>` | |
 | `code <name> <lang>` | verbatim lines | `lang` `spice` = all SPICE dialects; `ngspice`/`xyce`/`spectre` = that dialect only; anything else goes to a runner plugin. In a `.shcomp` the text is the component's own (`.model` cards, `.param` lines, XSPICE `A` devices, an extracted netlist): it is emitted inside each of its definitions (netlist.md §7.6.15), never at the top of a bench that instantiates it. |
@@ -167,6 +167,8 @@ Document order is preserved.
 | `lib tech map <relpath>` | — |
 | `plugin <name> path <file>.wasm` (a package's own manifest only, [config.md](config.md) §5 Layout) | `grant <capability>` (repeatable: what the package requests), `fuel <n>` (its suggested per-event budget, plugin ABI §2; whole number in [10^6, 10^11]) |
 | `set <key> <value>` | |
+
+`set nda true` (added 2026-11-07) marks the project as under NDA: the assistant's sessions on it are private whatever the account's Privacy Mode, and nothing of it is kept for training (backend.md §3; `Project::nda`). Any other value is not NDA.
 
 Header attribute `init <relpath>`: the project's Lua file, a path inside the project directory. Its `schemify.pack.add` specs are the project's plugins, loaded once the user trusts the file ([config.md](config.md) §2); a project declares no `plugin` records of its own (the editor names any it finds and loads none).
 

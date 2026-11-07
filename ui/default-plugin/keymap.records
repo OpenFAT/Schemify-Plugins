@@ -287,4 +287,6 @@ key Ctrl+! tools.remove_wires_running_through_selected_in
 key Ctrl+Shift+B view.toggle_left
 key Ctrl+Shift+L view.toggle_right
 key Ctrl+, view.settings
+# F1: the command palette (VS Code's F1; its Ctrl+Shift+P is xschem's output port here).
+key F1 view.palette
 key Ctrl+Shift+J view.toggle_bottom

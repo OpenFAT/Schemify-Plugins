@@ -47,6 +47,7 @@ Files:
 | `<config>/init.lua` | The user config (§2). |
 | `<config>/lua/` | Root of `require` (§2). |
 | `<config>/lua/settings.lua` | The user's settings file, written by the settings editor (§3.4). |
+| `<config>/lua/tools.lua` | The user's tools file: program rows and kit paths, written by the Simulators and PDKs panes (§3.5). |
 | `<config>/schemify-pack.lock` | The package lockfile (§5), next to `init.lua`. |
 | `<data>/pack/<name>/` | An installed `git` or `url` package (§5). |
 
@@ -81,11 +82,13 @@ The init file and every function it registers run in one Lua 5.4 state that only
 | Call | Effect |
 |---|---|
 | `schemify.opt.<key> = value` | Sets an option; reading `schemify.opt.<key>` returns its value. Keys and types below; an unknown key or a wrong type is an error. |
-| `schemify.keymap.set(chord, target, opts?)` | Binds `chord` (the keymap record syntax, `Ctrl+Shift+N`, `F5`, `w`) to `target`: a command name ([plugin-abi.md](plugin-abi.md) §7, the D27 command table) or a Lua function. `opts.desc` is a description string. A later `set` of the same chord replaces the earlier one. |
+| `schemify.keymap.set(chord, target, opts?)` | Binds `chord` (the keymap record syntax, `Ctrl+Shift+N`, `F5`, `w`) to `target`: a command name ([plugin-abi.md](plugin-abi.md) §7, the D27 command table) or a Lua function. `opts.desc` is a description string (the command palette's title for a function); `opts.when` a keymap context ([plugin-abi.md](plugin-abi.md) §7: `canvas`, `tool.wire`, `dialog`, `text-input`, …; another word is an error). A later `set` of the same (chord, `when`) replaces the earlier one. |
+| `schemify.keymap.del(chord, opts?)` | Neovim's `vim.keymap.del`: `chord` does nothing in `opts.when` (everywhere without one) from now on, whoever bound it (the default UI, a plugin, a theme): the record `key <chord> - [when <ctx>]`. Like `set`, it replaces that (chord, `when`) row; a later `set` binds it again. |
+| `schemify.layout.define(name, { left = , right = , bottom = , sizes = { … } })` | A named dock layout (§3.6). |
 | `schemify.cmd(name, args?)` | Queues command `name` with the argument string `args` (default empty). The editor runs queued commands in order at its next delivery; the core has no command table yet and ignores them. |
 | `schemify.on(event, fn)` | Calls `fn(ev)` after each `event` the editor delivers to plugins; returns the autocommand id. Shorthand for `schemify.api.create_autocmd(event, { callback = fn })` (§3.3). Events (plugin-abi §6 wire words): `load` (the editor is ready), `doc_opened`, `doc_closed`, `doc_changed`, `selection_changed`, `saved`, `run_done`. `ev` holds the event's fields (`ev.doc`, `ev.epoch`, `ev.job`) plus `ev.event`, `ev.id` and `ev.match`. Hooks run in registration order. |
 | `schemify.api.*` | Neovim's API under Neovim's names: editor reads (§3.1), user commands (§3.2), autocommands (§3.3). There is no `vim` global; `local vim = schemify` is the user's choice. |
-| `schemify.sim(name, { path = , args = , env = })` | Only at the top level of the user's own `init.lua`: a project file (trusted or not) and any function either file keeps get an error and set no row, so a cloned project cannot choose which programs run. The external programs of run.md §5: `ngspice`, `espice`, `xyce`, `ltspice` and `spectre` (simulator command lines; `{netlist}` and `{raw}` are replaced by the job's files; without `args` the defaults of run.md §5), `openvaf`, `iverilog` (compilers; `args` unused). `path` is required (a local `path` with a directory part that names no file when a run starts is a warning, `sim_notes`, and the simulator's default program on `PATH` runs instead); `args` is a list of strings; `env` maps variable names (non-empty, no `=`) to strings, at most 64, set for the program on top of the inherited environment and stored sorted by name (ESPice's `ZIG`, the Zig 0.17 it compiles Verilog-A with). Another name, or a bad `args`/`env`, is an error that leaves the row unset. The core's runner and the editor's Simulate both use all seven; a PDK-pinned or detected simulator runs through the same row. With `host = "[user@]host"` (a simulator only; a compiler with a `host` is an error) the row is that simulator's command line on that ssh destination (run.md §5, remote jobs), kept beside the local row and keyed by (simulator, destination), a later row replacing an earlier one; there `path` is optional (absent: the simulator's default program on the host's `PATH`). The destination is `user` `[a-z_][a-z0-9._-]{0,31}` and `@`, then a host name or `~/.ssh/config` alias `[A-Za-z0-9][A-Za-z0-9.-]{0,252}`: no port, IPv6 literal or option (they live in `~/.ssh/config`), so it never passes for an ssh option (`valid_host`). A control character in its `path`, `args` or `env` is an error (the words reach the host's login shell on one line). At most 64 rows name a host. |
+| `schemify.sim(name, { path = , args = , env = })` | Only at the top level of the user's own `init.lua`: a project file (trusted or not) and any function either file keeps get an error and set no row, so a cloned project cannot choose which programs run. The external programs of run.md §5: `ngspice`, `espice`, `xyce`, `ltspice` and `spectre` (simulator command lines; `{netlist}` and `{raw}` are replaced by the job's files; without `args` the defaults of run.md §5), `openvaf`, `iverilog` (compilers; `args` unused), and the layout tools `klayout`, `magic`, `netgen` (the kit's own DRC, extraction and LVS decks run on them, and `layout.open` starts KLayout; `args` unused, no `host`). `path` is required (a local `path` with a directory part that names no file when a run starts is a warning, `sim_notes`, and the simulator's default program on `PATH` runs instead); `args` is a list of strings; `env` maps variable names (non-empty, no `=`) to strings, at most 64, set for the program on top of the inherited environment and stored sorted by name (ESPice's `ZIG`, the Zig 0.17 it compiles Verilog-A with). Another name, or a bad `args`/`env`, is an error that leaves the row unset. The core's runner and the editor's Simulate both use all seven; a PDK-pinned or detected simulator runs through the same row. With `host = "[user@]host"` (a simulator only; a compiler with a `host` is an error) the row is that simulator's command line on that ssh destination (run.md §5, remote jobs), kept beside the local row and keyed by (simulator, destination), a later row replacing an earlier one; there `path` is optional (absent: the simulator's default program on the host's `PATH`). The destination is `user` `[a-z_][a-z0-9._-]{0,31}` and `@`, then a host name or `~/.ssh/config` alias `[A-Za-z0-9][A-Za-z0-9.-]{0,252}`: no port, IPv6 literal or option (they live in `~/.ssh/config`), so it never passes for an ssh option (`valid_host`). A control character in its `path`, `args` or `env` is an error (the words reach the host's login shell on one line). At most 64 rows name a host. Rows the Simulators pane writes live in the tools file (§3.5). |
 | `schemify.notify(msg, level?)` | Shows `msg`: `level` is `"error"`, `"warn"` or `"info"` (default). |
 | `schemify.pack.add { spec, … }` | Declares user packages (§5). Each call appends; a later spec with the same name replaces the earlier one. |
 
@@ -135,7 +138,11 @@ Options, one row of `OPTIONS` in `crates/model/config/src/options.rs` each (that
 | `export_portrait` | boolean | `false` | PDF and EPS pages are portrait (else landscape). |
 | `png_scale` | number in [0.1, 16] | `1` | PNG export scale; 1 is one image pixel per logical pixel (96 dpi), stored in percent. |
 | `simulator` | `"ngspice"`, `"espice"`, `"xyce"`, `"ltspice"`, `"spectre"` or `nil` | `nil` | The simulator Simulate and `schemify run` start, and the dialect `schemify netlist` and the editor's netlist dialect default to (run.md §5). `--dialect`, the Netlist dialect menu and a PDK's pinned simulator override it; unset, the first installed simulator is used (espice first), else espice. |
+| `store_index` | URL string | `""` | The store index the Store overlay reads (store.md): a signed `index` file at an `https://` (or `file://`) URL. Empty: no index, the overlay lists the installed packages only. Only the user's own `init.lua` or settings set it. |
 | `check_app_updates` | boolean | `false` | Ask for a new Schemify release once a day at startup (update.md §3). Off, the app asks only from Help → Check for updates; it never contacts anything at startup. Only the user's own `init.lua` sets it. |
+| `privacy_mode` | boolean | `false` | Privacy Mode from this machine: the assistant's sessions are always private, whatever the account's setting (backend.md §3). Off, the account's Privacy Mode decides (its dashboard; an NDA project is private either way). Only the user's own `init.lua` or settings set it. |
+| `gateway_url` | URL string | `""` | The AI gateway the agent chat talks to (gateway.md): an `https://` URL. Empty: the chat says the assistant is not configured and contacts nothing. Only the user's own `init.lua` or settings set it. |
+| `backend_url` | URL string | `""` | The Schemify account service Sign in talks to (backend.md §5.1): an `https://` URL. Empty: Sign in is hidden and the chat opens sessions with the installed licence only. Only the user's own `init.lua` or settings set it. |
 <!-- /options -->
 
 Steps are stored in milli-units (D33), rounded to the nearest; a step that rounds to 0 or exceeds 10^6 units is an error. A layer outside `0`–`21`, a colour that is not six hex digits, or a number out of its range is an error. The editor reads the options once, at startup; changing a colour, the dim factor or the line width from a menu lasts for the session (the settings editor, §3.4, keeps it). The view state is the exception: `theme`, `theme_mode`, `light` and `ui_zoom` as last picked in the editor are kept in `<state>/view` (§1; one `<key> <value>` line each, values as Lua would write them) and applied at the next start to each of them neither Lua nor the project's settings file assigned (it wins over the user's settings file, which the settings editor writes together with it).
@@ -218,6 +225,27 @@ Precedence, lowest first: the default (or the plugin's `option` record) < the us
 
 Security (D7): the project's file is project content, covered by the project's trust digest (§2), so it applies only once the user trusts the project; the overlay edits it only while the project is trusted or has nothing to trust yet, and trusts the digest of what it just wrote (the user's click made it). It never holds a user-only option: such a row is locked in the Project tab, and a project file that names one has that line skipped with a warning. Writing a settings file (`settings.set`, `settings.toggle`, `settings.pick`, `settings.color`, `settings.reset`, `settings.done`) runs from the window and the dev command stream, never from a plugin's `command` record or `schemify.cmd`; a user-only option changes only from the window. No overlay command is a consent command (`Cmd::needs_user`).
 
+### 3.5 The tools file
+
+The editor's Simulators pane (View → Simulators: Download, Existing install, Over SSH) and the PDKs pane's existing-kit form write one tool-owned file, `<root>/lua/tools.lua` (`<root>` the config root), rewritten whole on every change and never an init file. It is the user's only: a project has none. Each line is one call, parsed without running (the strict reader of `schemify_config::tools`; Lua running the same text sets the same rows):
+
+```lua
+schemify.sim("ngspice", { path = "/home/me/.local/share/schemify/tools/ngspice/47/root/bin/ngspice_con.exe" })
+schemify.sim("spectre", { host = "me@cad1", path = "/cad/bin/spectre", args = { "-format", "nutbin", "-raw", "{raw}", "{netlist}" } })
+schemify.pdk_root{ ["sky130"] = "/opt/pdk/sky130" }
+```
+
+- Fields: `host` (optional, `valid_host`), `path` (required here, optional with a `host`), `args` (optional list); no `env` (that stays in `init.lua`). A line outside the grammar, or a value `schemify.sim` would refuse, is skipped with a warning naming its line; the other lines apply.
+- Applied before the user's init file, so a `schemify.sim` or `schemify.pdk_root` there wins; the pane shows such a row locked (*set in init.lua*) and refuses to save or forget it (`Table::from_init`).
+- `schemify.pdk_root{ family = path, … }` (also in the user's own `init.lua`, at its top level only, like `schemify.sim`; a project file gets an error): where the user keeps each kit, at most 64 families of `[a-z][a-z0-9_-]{0,31}`. The editor, `schemify netlist` and `schemify run` export each as `PDK_ROOT_<FAMILY>` (uppercased, `-` as `_`) for `${NAME}` expansion and the PDK store's programs, unless the process environment already has it; `pdk.use` of a `local` kit at that path writes `set PDK_ROOT ${PDK_ROOT_<FAMILY>}` (pdk.md §3.1), so the manifest stays free of the user's path.
+- Security (D7): every write (Save, Forget, Install's row, Add kit) and every program start (Probe, Install) is a `Cmd::needs_user` command, so it runs only from a click or a key, never from a plugin, a Lua call or the command stream. A downloaded program's archive is sha256-checked before it is unpacked; Save waits for a probe of exactly the values shown.
+
+### 3.6 Named layouts and the layouts file
+
+`schemify.layout.define("review", { left = "explorer", right = "agent", bottom = "checks", sizes = { left = 240, bottom = 200 } })` names a layout: each dock key names the pane it shows (moved there when it is declared in another dock); a dock left out, or `false`, is hidden; `sizes` (px, 1–4096) set the docks' sizes, and a dock without one keeps its size. The name is one word of `A–Z a–z 0–9 _ -` (at most 64): the command `view.layout.<name>` applies it (the command palette lists every layout). At most 64 layouts; a later definition of a name replaces it. **Zen mode** (`view.zen`, View → Zen mode) hides every dock and, run again before any other dock command, brings them back.
+
+View → Save layout as… (`view.layout_save`) asks a name and saves the docks as they are (each shown pane and its size) to one tool-owned file, `<root>/lua/layouts.lua`, rewritten whole on every save and never an init file; its lines are `schemify.layout.define` calls exactly as above, parsed without running (`schemify_config::layout`), after the user's init file: a layout `init.lua` defines under the same name wins, and saving that name is refused (*defined in init.lua*). A bad line is skipped with a warning naming its line.
+
 ## 4. Sandbox
 
 One interpreter on every target: omnilua, a pure-Rust Lua 5.4 (`crates/model/config/src/lua.rs`; the user's decision of 2026-10-12, web.md §5), built without its `io`, `os` and `package` libraries.
@@ -234,7 +262,7 @@ On the web the init file is OPFS `/config/init.lua` and its modules `/config/lua
 
 ## 5. Packages
 
-A package is a prebuilt wasm plugin ([plugin-abi.md](plugin-abi.md)). Packages never run native code: there are no build hooks.
+A package is a prebuilt wasm plugin ([plugin-abi.md](plugin-abi.md)). Packages never run native code: there are no build hooks. The one native install is a first-party simulator or compiler from the Simulators pane (`schemify_cli::tool`, sha256-checked, decision D35 amendment 2026-11-06), which is a program row, not a package.
 
 ### Spec
 
@@ -245,13 +273,19 @@ A package is a prebuilt wasm plugin ([plugin-abi.md](plugin-abi.md)). Packages n
 | `src` | Git repository: anything `git clone` accepts; a path starting `./`, `../` or `~/` is relative to the config root (or the home directory). Local paths (here and in `path`) are cleaned lexically: `.` segments are dropped, `..` is kept (no filesystem lookup), so the lockfile and `pack status` print `<root>/plugins/x`, never `<root>/./plugins/x`. |
 | `url` + `sha256` | One `.wasm` file fetched with `curl`; `sha256` (64 lowercase hex digits) is required and checked before anything is installed. |
 | `path` | A local package directory used in place (development); never copied. Relative to the config root, or the home directory with `~/`. |
-| `name` | Package name; default: the last segment of the source without `.git`/`.wasm`. One word of `A–Z a–z 0–9 . _ -`. |
+| `builtin` | A first-party package embedded in the app (below): `"gmid"` or `"interop"`. An unknown name is a load note naming the built-ins. |
+| `index` + `version` | A release of a store index entry (store.md §3): `index` names the entry (and the package), `version` is `x.y.z`, and the spec carries the pin the index listed, `url` + `sha256` or `src` + a 40-hex commit `rev`, so it installs exactly as that source without the index. The store overlay writes these into `lua/store.lua` (§5.1). |
+| `name` | Package name; default: the last segment of the source without `.git`/`.wasm`, or the `builtin` word (an `index` spec: its entry). One word of `A–Z a–z 0–9 . _ -`. |
 | `rev` / `version` | Git only: the branch, tag or commit to check out (`version` is a tag; give one of the two). Default: the remote's default branch. |
 | `grant` | List of capabilities the user grants (plugin-abi §5). |
 | `fuel` | Per-event instruction budget, whole number in [10^6, 10^11] (plugin-abi §2); default 10^8. |
 | `lazy` | `{ cmd = "x.run" or {…}, event = "doc_opened" or {…} }`: load the plugin on the first matching command or event (§3 event words) instead of at startup. Default: eager. |
 
-Exactly one of `src`, `url`, `path`. A spec error (missing source, bad name, unknown field, bad `sha256`) is reported with its `file:line` and that spec is dropped. At most 128 user packages.
+Exactly one of `src`, `url`, `path`, `builtin` (an `index` spec pins `src` or `url`). A spec error (missing source, bad name, unknown field, bad `sha256`) is reported with its `file:line` and that spec is dropped. At most 128 user packages.
+
+### 5.1 The store file
+
+`<config>/lua/store.lua` holds the `index` specs the store overlay installed, one `schemify.pack.add{ { index = …, version = …, … } }` line each, in name order, rewritten whole on every install, update, rollback or uninstall (store.md §3). Like the settings file (§3.4) it is tool-owned and read, not run: a strict parser reads it after the user's `init.lua` and adds each spec whose name the init file did not add (a hand-written spec wins), a bad line is one warning and is skipped alone, and Lua running it gives the same specs. The editor never writes `init.lua`. A project has no store file: store packages are the user's.
 
 ### Layout
 
@@ -264,6 +298,17 @@ A package directory holds the module and, optionally, its manifest:
 ```
 
 `schemify.project` is the project-manifest format with a single `plugin <name> path <file>.wasm` record whose `grant` attributes are the capabilities the plugin **requests** and whose `fuel` is its suggested budget (the spec's `fuel` wins). Without a manifest the module is `<name>.wasm` and it requests exactly what the user grants. A `url` package is a single `.wasm` file installed as `<data>/pack/<name>/<name>.wasm`.
+
+### Built-in packages
+
+GmIdW (`gmid`) and Interoperate (`interop`) ship inside the app: each is `crates/model/cli/assets/builtin/<name>/` (`module.wasm`, the plugin's own `schemify.project`, and `pin`: `repo`, `commit`, `sha256`), copied from the public plugin repository at one commit by `tools/update-builtins.sh <checkout> <commit> [<sha256>]` (`--check` re-hashes every module against its pin). `pack::builtins()` lists them.
+
+- **Off unless enabled.** Nothing of a built-in loads until the user config, or a project init file the user trusts (§2), names it: `schemify.pack.add { { builtin = "gmid", grant = { "read_project" } } }`. Leaving the spec out leaves it off.
+- **Grants as for any package.** It gets the intersection of its manifest's requests and the spec's `grant` (Capabilities, D7); `fuel` and `lazy` apply unchanged.
+- **No download, no lock.** The module is the app's own bytes: `sync`, `update` and `restore` fetch nothing and write no lockfile row (a row an earlier install left under that name is dropped); `clean` removes a leftover package directory of that name. Its version is the pinned commit and moves only with the app, so `outdated` never reports it.
+- **First-party `src` specs.** A `src` naming the built-in's repository (`github.com/Scouren/GmIdW` or `…/Interoperate`, or a former name: owner `OpenFAT` for either, `GmId-Visualizer` for GmIdW; any of the `https://`, `ssh://`, `git@host:` forms, `.git` or not, case-insensitive) **without** `rev`/`version` resolves to the built-in. Why: the plugins' READMEs give exactly that spec, so existing configs and projects keep working with no clone (and keep working if those repositories go private), and the module matches the app's ABI; a pinned `rev`/`version` is the user's choice of that exact code and stays a git package.
+- **The interop helper.** Interoperate's wasm spawns the native `schemify-interop`, which the Nix package puts on the wrapped programs' `PATH` (flake input `interop`). Both must come from the same Interoperate commit: the update script prints the `nix flake lock --override-input interop …` line that pins the helper to the commit it embedded.
+- **Size.** The modules add their bytes (≈2.2 MB, Interoperate ≈2.0 MB of it) to `schemify-gui` only: they sit in a static only the loader reads, so the `schemify` CLI links none of them.
 
 ### Themes
 
@@ -288,7 +333,7 @@ A loaded package gets the **intersection** of what it requests and what the user
 
 ### Lockfile
 
-`<root>/schemify-pack.lock`, next to the init file (a project's: `<project>/schemify-pack.lock`, §2), in the lockfile row form of [format.md](format.md) §4: `locked plugin <name> <kind> <resolved> <sha256>`, sorted by name. `<kind>` is `git`, `url` or `path`; `<resolved>` is the commit, the url or the absolute path; `<sha256>` is the sha256 of the package's `.wasm`. Tool-written only; meant to be committed with the init file.
+`<root>/schemify-pack.lock`, next to the init file (a project's: `<project>/schemify-pack.lock`, §2), in the lockfile row form of [format.md](format.md) §4: `locked plugin <name> <kind> <resolved> <sha256>`, sorted by name. `<kind>` is `git`, `url`, `path` or `index` (resolved and hashed as the source it pins; a built-in has no row); `<resolved>` is the commit, the url or the absolute path; `<sha256>` is the sha256 of the package's `.wasm`. Tool-written only; meant to be committed with the init file.
 
 ### Commands
 
@@ -300,13 +345,14 @@ A loaded package gets the **intersection** of what it requests and what the user
 | `update` | Fetches every `git` package and moves it to `rev`/`version` (or the default branch's latest commit), re-hashes every package, rewrites the lockfile. |
 | `restore` | Makes every listed package exactly what the lockfile says: checks out the locked commit, re-fetches a `url` whose file is missing; a hash that still differs from the lock is an error. Packages without a lock row are installed as by `sync`. |
 | `clean` | Deletes every directory under `<data>/pack/` that no spec names and drops lockfile rows for unlisted packages. |
-| `status` | One line per package: name, kind, resolved source, `ok` / `missing` / `changed` (hash ≠ lock) / `unlocked`, and the `denied` and `unused` grants. The editor shows the same lines in a read-only `packages` tab (command `tools.package_status`), with a `schemify pack sync` hint when a package is missing. |
+| `list` | One line per built-in package, `built-in <commit> on`, `on (project)` or `off`, then one per other spec with its kind. Needs no config root. |
+| `status` | One line per package: name, kind, resolved source, `ok` / `missing` / `changed` (hash ≠ lock) / `unlocked`, and the `denied` and `unused` grants; a built-in reads `builtin <commit> ok`. The editor shows the same lines in a read-only `packages` tab (command `tools.package_status`), with a `schemify pack sync` hint when a package is missing. |
 
 Fetching: `git` sources by running `git` (`clone`, `fetch`, `checkout`, `rev-parse`), `url` sources by running `curl -fsSL -o <tmp> <url>`, as lazy.nvim and `vim.pack` do; no HTTP library is linked. A downloaded file whose sha256 differs from the spec is deleted and the package fails with nothing installed.
 
 ### Updates (`outdated`)
 
-Nothing checks packages at startup (decision 2026-11-06). `pack::outdated` is the query a caller runs on demand (the marketplace marks an installed item *Update available*, marketplace Phase 3): for each `git` package, one `git ls-remote` (no clone) compares the remote with the lock row. A spec without `rev`, or whose `rev` names a branch, has an update when that head moved; a `rev` naming a tag (`version`) is the user's pin, and a newer version tag (same text before the first digit, numerically greater, no pre-release part) is reported but not applied; a commit `rev` never moves. `url` and `path` packages have no upstream to ask; an unreachable remote is skipped silently. `update` (above) is what moves a package.
+Nothing checks packages at startup (decision 2026-11-06). `pack::outdated` is the query a caller runs on demand (the marketplace marks an installed item *Update available*, marketplace Phase 3): for each `git` package, one `git ls-remote` (no clone) compares the remote with the lock row. A spec without `rev`, or whose `rev` names a branch, has an update when that head moved; a `rev` naming a tag (`version`) is the user's pin, and a newer version tag (same text before the first digit, numerically greater, no pre-release part) is reported but not applied; a commit `rev` never moves. `url`, `path` and built-in packages (including a first-party `src` that resolves to one) have no upstream to ask; an unreachable remote is skipped silently. `update` (above) is what moves a package.
 
 ## 6. Load order and the user-config table
 
@@ -320,9 +366,11 @@ The user-config table (owner: `crates/model/config`; readers: both binaries):
 |---|---|---|
 | options | one per row of §3, with the layer that assigned it (§3.4) | fixed |
 | plugin options | key, layer, literal (§3.4) | 256 keys |
-| keymaps | chord, target (command name or function id), description | 4096 |
+| keymaps | chord, context (`when`), target (command name, function id, or unbind), description | 4096 |
+| layouts | name, pane per dock, size per dock (§3.6) | 64 |
 | sims | `ngspice`, `openvaf`, `iverilog`, `espice`: path, args, env (≤ 64 each) | 4 |
 | hosts | simulator, ssh destination, path, args, env (`sim` rows with a `host`) | 64 |
+| pdk roots | family, path (`schemify.pdk_root`, §3.5) | 64 |
 | packages | the specs of §5, each marked user or project (§2) | 128 |
 | hooks | autocommand id, event word, function id, group, cell patterns (≤ 64 of ≤ 256 bytes), once | 1024 |
 | groups | autocommand group name | 256 |

@@ -97,6 +97,13 @@ pub(crate) static RECORDS: [RecordSchema; RecordKind::Unknown as usize + 1] = [
         AttrSchema { repeat: true, ..many("goal", &[A, Ty::Choice(&["min", "max", "target"])]) },
         repeat("vary", &[A]), repeat("config", &[A]), repeat("corner", &[A]),
         attr("budget", &[N]), attr("seed", &[N]),
+        // `yield <min> [<confidence>]` (`algo mincost`, run spec §6).
+        AttrSchema {
+            key: "yield",
+            shape: Shape { fixed: &[A], rest: Rest::Optional(A) },
+            required: false,
+            repeat: false,
+        },
     ]),
     rec("output", 6, KN, fixed(&[A, A]), &[UNIT]),
     rec("spec", 6, KN, fixed(&[A]), &[MIN, MAX]),
