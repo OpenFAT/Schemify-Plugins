@@ -104,6 +104,7 @@ style canvas
 
 style work
   dir row
+  hover-bg 3874d8
   grow 1
   stretch 1
 
@@ -246,27 +247,30 @@ style body
 style activity
   bg d9d9d9
   dir column
-  width 36
-  pad 4
+  width 44
+  pad 0
   pad-y 4
-  gap 2
+  gap 0
 
 style activity-button
-  pad 5
-  height 28
-  width 28
+  pad 12
+  height 40
+  width 44
   hover-bg ececec
   active-bg c3c3c3
-  radius 3
+  radius 0
+  mark 2
 
 style dock-hsplit
   bg a0a0a0
+  hover-bg 3874d8
   dir row
   grow 1
   stretch 1
 
 style dock-vsplit
   bg a0a0a0
+  hover-bg 3874d8
   dir column
   grow 1
 
@@ -305,25 +309,90 @@ style dock-note
   pad 8
   pad-y 8
 
-# The agent chat (the `agent` pane; chat spec). The consent buttons inside it are core-owned
-# (`core.button`, `core.primary`); everything else here a theme restyles.
+# ui-shell (area A): the bottom dock's tabs, and the rows of the Explorer, Search, Source
+# control and Account panes (a tree row, a dim row, a right-hand marker, a section header).
+style dock-tab
+  pad 6
+  height 20
+  font 12
+  hover-bg cfcfcf
+  active-bg f4f4f4
+
+style tree-row
+  pad 6
+  height 23
+  hover-bg ececec
+  active-bg c3c3c3
+
+style tree-dim
+  fg 555555
+  pad 6
+  height 23
+  hover-bg ececec
+
+style tree-line
+  dir row
+  gap 0
+
+style tree-fill
+  pad 6
+  height 23
+  grow 1
+  hover-bg ececec
+  active-bg c3c3c3
+
+style search-input
+  width 216
+
+style tree-indent
+  pad 2
+  height 23
+
+style tree-arrow
+  pad 0
+  width 16
+  height 23
+
+style tree-mark
+  fg 555555
+  font 11
+  pad 10
+  height 23
+
+style tree-section
+  fg 555555
+  font 11
+  pad 12
+  pad-y 4
+  height 34
+
+style scm-mark
+  fg 555555
+  font 11
+  pad 10
+  height 23
+# --- end ui-shell dock rows ---
+
+# ===== ui-chat: the agent chat (the `agent` pane; chat spec) =====
+# Layout and the classic (light) colours; the Modern theme recolours the same classes. The consent
+# buttons inside are core-owned (`core.chat`, `core.chat-primary`); everything else a theme restyles.
 style chat-pane
   bg f4f4f4
   dir column
   grow 1
 
-style chat-off
-  fg 333333
-  pad 10
-  pad-y 10
-
 style chat-head
   dir row
-  gap 6
-  pad 8
-  pad-y 4
+  height 36
+  gap 10
+  pad 12
 
-style chat-privacy
+style chat-title
+  fg 111111
+  face bold
+  font 13
+
+style chat-sharing
   fg 1a3a8a
   font 11
 
@@ -331,37 +400,131 @@ style chat-meter
   fg 555555
   font 11
 
+style chat-icon
+  fg 555555
+  hover-fg 111111
+  width 16
+  height 16
+
+style chat-item
+  pad 8
+  height 22
+
+style chat-rule
+  bg c8c8c8
+  height 1
+
 style chat-log
   dir column
-  gap 6
-  pad 8
+  gap 12
+  pad 14
+  pad-y 14
   grow 1
+
+style chat-off
+  fg 333333
 
 style chat-user
   bg e6e6e6
+  border 1
+  border-color c8c8c8
+  radius 8
   dir column
-  gap 4
-  pad 8
-  pad-y 6
+  gap 6
+  pad 11
+  pad-y 9
+
+style chat-chips
+  dir row
+  height 18
+  gap 5
+
+style chat-chip
+  fg 333333
+  bg dcdcdc
+  border 1
+  border-color c0c0c0
   radius 4
+  font 11
+  pad 6
+  gap 4
+  height 18
+  dir row
+
+style chat-chip-name
+  fg 333333
+  font 11
+  gap 4
+
+style chat-chip-x
+  fg 777777
+  hover-fg 111111
+  width 16
+  height 16
 
 style chat-user-text
   fg 111111
+  font 13
+
+style chat-thought
+  dir column
+  gap 4
+
+style chat-thought-line
+  fg 555555
+  font 12
+  gap 6
 
 style chat-text
   fg 111111
+  font 13
+
+style chat-steps
+  dir column
+  gap 4
+  pad 10
+  border-color c8c8c8
 
 style chat-step
-  fg 333333
-  hover-bg e0e0e0
-  font 12
-  pad 4
+  dir row
+  height 18
+  gap 8
+  hover-bg e8e8e8
 
 style chat-step-error
-  fg 8a1a1a
-  hover-bg e0e0e0
+  dir row
+  height 18
+  gap 8
+  hover-bg e8e8e8
+
+style chat-step-verb
+  fg 555555
   font 12
-  pad 4
+  gap 8
+
+style chat-step-name
+  height 18
+  fg 222222
+  face mono
+  font 12
+
+style chat-step-metric
+  height 18
+  fg 555555
+  face mono
+  font 12
+
+style chat-step-ok
+  height 18
+  fg 2e7d32
+  face mono
+  font 12
+
+style chat-step-bad
+  height 18
+  fg 8a1a1a
+  face mono
+  font 12
 
 style chat-detail
   fg 333333
@@ -373,25 +536,72 @@ style chat-card
   bg ffffff
   border 1
   border-color c8c8c8
-  radius 4
+  radius 8
   dir column
-  gap 6
-  pad 8
+  gap 0
+
+style chat-card-head
+  dir row
+  height 30
+  gap 8
+  pad 10
   pad-y 6
 
 style chat-card-title
   fg 111111
   font 12
+  gap 8
+
+style chat-card-body
+  fg 111111
+  font 12
+  pad 10
+  pad-y 6
 
 style chat-card-state
   fg 555555
   font 11
 
+style chat-plus
+  height 18
+  fg 2e7d32
+  face mono
+  font 12
+
+style chat-minus
+  height 18
+  fg c62828
+  face mono
+  font 12
+
 style chat-diff
-  fg 222222
-  font 11
+  height 18
+  fg 333333
+  face mono
+  font 12
+  pad 10
+
+style chat-diff-add
+  height 18
+  fg 1b5e20
+  bg e3f4e5
+  face mono
+  font 12
+  pad 10
+
+style chat-diff-del
+  height 18
+  fg 8a1a1a
+  bg fbe4e4
+  face mono
+  font 12
+  pad 10
 
 style chat-buttons
+  dir row
+  gap 6
+
+style chat-buttons-end
   dir row
   gap 6
 
@@ -402,8 +612,8 @@ style chat-note
 style chat-foot
   dir column
   gap 4
-  pad 8
-  pad-y 6
+  pad 12
+  pad-y 4
 
 style chat-task
   fg 333333
@@ -418,16 +628,70 @@ style chat-stop
   hover-bg cfcfcf
   border 1
   border-color a0a0a0
-  radius 3
+  radius 5
   pad 8
+  height 19
+
+style chat-dock-wrap
+  dir column
+  pad 12
+  pad-y 12
+
+style chat-dock
+  bg ffffff
+  border 1
+  border-color b8b8b8
+  radius 9
+  dir column
+
+style chat-review
+  dir row
+  height 30
+  gap 8
+  pad 10
+  pad-y 6
+
+style chat-review-text
+  fg 111111
+  font 12
+  gap 8
+
+style chat-box
+  dir column
+  gap 6
+  pad 10
+  pad-y 8
 
 style chat-input
+  width 374
   fg 111111
   bg ffffff
-  width 330
-  height 28
-  pad 6
-  pad-y 6
+  accel-fg 888888
+  height 34
+  pad 0
+  pad-y 4
+
+style chat-bar
+  dir row
+  height 24
+  gap 8
+
+style chat-pill
+  fg 333333
+  bg e6e6e6
+  radius 5
+  pad 8
+  height 20
+  font 12
+
+style chat-send
+  fg ffffff
+  bg 333333
+  hover-bg 111111
+  radius 12
+  width 24
+  height 24
+  pad 4
 
 style bottom-bar
   bg e0e0e0
@@ -541,7 +805,14 @@ style status-field
   border 1
 
 style status-msg
-  grow 1
+  grow 0
+
+style status-staged
+  fg 107010
+
+style status-right
+  fg 404040
+  pad 4
 
 style text_input
   bg ffffff
@@ -782,6 +1053,11 @@ node file.image_export.svg_export item
   label "SVG Export"
   command file.image_export.svg_export
   accel Alt+*
+node file.export_cdl item
+  parent menu.file
+  label "Export CDL netlist…"
+  command file.export_cdl
+  tooltip "Write the cell's CDL netlist to .schemify/netlist/ (the simulator dialect stays)"
 node file.export_project item
   parent menu.file
   label "Export project (zip)"
@@ -1029,26 +1305,6 @@ node options.netlist_format_symbol_mode.flat_netlist item
   command options.netlist_format_symbol_mode.flat_netlist
   accel :
   checked 0
-node options.netlist_format_symbol_mode.spice_netlist item
-  parent menu.options.netlist_format_symbol_mode
-  label "Spice netlist"
-  command sim.dialect.ngspice
-  accel Ctrl+Shift+V
-  checked 0
-  style radio
-node options.netlist_format_symbol_mode.espice_netlist item
-  parent menu.options.netlist_format_symbol_mode
-  label "ESPice netlist"
-  command sim.dialect.espice
-  checked 0
-  style radio
-node options.netlist_format_symbol_mode.verilog_netlist item
-  parent menu.options.netlist_format_symbol_mode
-  label "Verilog netlist"
-  command sim.dialect.verilog
-  accel Ctrl+Shift+V
-  checked 0
-  style radio
 node menu.view menu
   parent menubar
   label View
@@ -1132,10 +1388,10 @@ node view.toggle_colorscheme item
   label "Toggle colorscheme"
   command view.toggle_colorscheme
   accel Shift+O
-node view.theme.modern item
+node view.theme.xschem item
   parent menu.view
-  label "Modern theme"
-  command view.theme.modern
+  label "Classic theme"
+  command view.theme.xschem
   checked 0
 node view.ui_zoom_in item
   parent menu.view
@@ -1645,45 +1901,6 @@ node view.checks item
   parent menu.simulation
   label "Checks panel"
   command view.checks
-node menu.simulation.dialect menu
-  parent menu.simulation
-  label "Netlist dialect"
-node sim.dialect.ngspice item
-  parent menu.simulation.dialect
-  label ngspice
-  command sim.dialect
-  checked 1
-  style radio
-node sim.dialect.espice item
-  parent menu.simulation.dialect
-  label ESPice
-  command sim.dialect
-  checked 0
-  style radio
-node sim.dialect.xyce item
-  parent menu.simulation.dialect
-  label Xyce
-  command sim.dialect
-  checked 0
-  style radio
-node sim.dialect.cdl item
-  parent menu.simulation.dialect
-  label CDL
-  command sim.dialect
-  checked 0
-  style radio
-node sim.dialect.spectre item
-  parent menu.simulation.dialect
-  label Spectre
-  command sim.dialect
-  checked 0
-  style radio
-node sim.dialect.verilog item
-  parent menu.simulation.dialect
-  label Verilog
-  command sim.dialect
-  checked 0
-  style radio
 node menu.simulation.sep0 separator
   parent menu.simulation
 node simulation.show_netlist_after_netlist_command item
@@ -1962,6 +2179,10 @@ node tb.waves button
 node body panel
   parent window
   style body
+# ui-shell (area A): the icon bar, top to bottom: Explorer, Search,
+# Source control, Packages, PDKs, Layout, Agent, Learn; Account and Settings at the bottom.
+# Icons are drawn 21 px (the mockup's 24-unit icons at 21/24, shifted 2.5 up to centre in the
+# 44 × 40 button); Checks and Results are tabs of the bottom dock, Simulators live in Packages.
 node activity panel
   parent body
   style activity
@@ -1969,61 +2190,76 @@ node activity.explorer button
   parent activity
   label Explorer
   command view.pane.explorer
-  tooltip "Explorer: the project's cells"
-  icon "M3 1.5 L9.5 1.5 L13 5 L13 14.5 L3 14.5 Z M9.5 1.5 L9.5 5 L13 5"
+  tooltip "Explorer: the project's files, the cell's outline and nets"
+  icon "M5.25 0.12 L11.38 0.12 L15.75 4.5 L15.75 15.88 L5.25 15.88 Z M11.38 0.12 L11.38 4.5 L15.75 4.5"
+  style activity-button
+node activity.search button
+  parent activity
+  label Search
+  command view.pane.search
+  tooltip "Search: cells, instances, nets and text across the project"
+  icon "M9.62 1.88 C12.52 1.88 14.88 4.23 14.88 7.12 C14.88 10.02 12.52 12.38 9.62 12.38 C6.73 12.38 4.38 10.02 4.38 7.12 C4.38 4.23 6.73 1.88 9.62 1.88 M17.5 15 L13.56 11.06"
+  style activity-button
+node activity.scm button
+  parent activity
+  label "Source control"
+  command view.pane.scm
+  tooltip "Source control: the project's changed files (git)"
+  icon "M5.25 1 C6.22 1 7 1.78 7 2.75 C7 3.72 6.22 4.5 5.25 4.5 C4.28 4.5 3.5 3.72 3.5 2.75 C3.5 1.78 4.28 1 5.25 1 M5.25 11.5 C6.22 11.5 7 12.28 7 13.25 C7 14.22 6.22 15 5.25 15 C4.28 15 3.5 14.22 3.5 13.25 C3.5 12.28 4.28 11.5 5.25 11.5 M15.75 3.62 C16.72 3.62 17.5 4.41 17.5 5.38 C17.5 6.34 16.72 7.12 15.75 7.12 C14.78 7.12 14 6.34 14 5.38 C14 4.41 14.78 3.62 15.75 3.62 M5.25 4.5 L5.25 11.5 M15.75 7.12 C15.75 10.62 10.5 9.75 6.12 11.5"
   style activity-button
 node activity.packages button
   parent activity
   label Packages
   command view.store
-  tooltip "Store: plugins and themes, installed and available"
-  icon "M2 2 H7 V7 H2 Z M9 2 H14 V7 H9 Z M2 9 H7 V14 H2 Z M9 9 H14 V14 H9 Z"
+  tooltip "Packages: plugins, simulators, PDKs and themes"
+  icon "M3.5 1 L9.62 1 L9.62 7.12 L3.5 7.12 Z M11.38 1 L17.5 1 L17.5 7.12 L11.38 7.12 Z M3.5 8.88 L9.62 8.88 L9.62 15 L3.5 15 Z M14.44 8.88 L14.44 15 M11.38 11.94 L17.5 11.94"
   style activity-button
 node activity.pdk button
   parent activity
   label PDKs
-  command view.pane.pdk
+  command view.store.pdk
   tooltip "PDKs: install, pin and switch kits"
-  icon "M8 1.5 L14.5 5 L8 8.5 L1.5 5 Z M1.5 8 L8 11.5 L14.5 8 M1.5 11 L8 14.5 L14.5 11"
+  icon "M10.5 0.12 L17.5 3.62 L10.5 7.12 L3.5 3.62 Z M3.5 8 L10.5 11.5 L17.5 8 M3.5 12.38 L10.5 15.88 L17.5 12.38"
   style activity-button
-node activity.sims button
+node activity.layout button
   parent activity
-  label Simulators
-  command view.pane.sims
-  tooltip "Simulators: download, pick or reach one over SSH"
-  icon "M1.5 8 L4 8 L5.5 3 L8 13 L10.5 5 L12 8 L14.5 8"
-  style activity-button
-node activity.checks button
-  parent activity
-  label Checks
-  command view.pane.checks
-  tooltip "Checks: violations of the shown level"
-  icon "M8 1.5 L15 14 L1 14 Z M8 6 L8 10 M8 11.5 L8 12.5"
-  style activity-button
-node activity.results button
-  parent activity
-  label Results
-  command view.pane.results
-  tooltip "Results: the last run's jobs and specs"
-  icon "M2 1.5 L2 14 L14.5 14 M5 11 L5 8 M8 11 L8 4 M11 11 L11 6.5"
+  label Layout
+  command view.pane.layout
+  tooltip "Layout: linked tools, LVS and parasitics"
+  icon "M3.5 1 L17.5 1 L17.5 15 L3.5 15 Z M3.5 6.25 L11.38 6.25 L11.38 15 M11.38 1 L11.38 6.25"
   style activity-button
 node activity.agent button
   parent activity
   label Agent
   command view.pane.agent
   tooltip "Agent (Ctrl+Shift+L)"
-  icon "M8 1.5 C8.5 5.5 10.5 7.5 14.5 8 C10.5 8.5 8.5 10.5 8 14.5 C7.5 10.5 5.5 8.5 1.5 8 C5.5 7.5 7.5 5.5 8 1.5 Z"
+  icon "M10.5 0.12 L12.25 4.5 L16.62 6.25 L12.25 8 L10.5 12.38 L8.75 8 L4.38 6.25 L8.75 4.5 Z"
+  style activity-button
+node activity.learn button
+  parent activity
+  label Learn
+  command view.pane.learn
+  tooltip "Learn: the analog course, with your progress"
+  icon "M10.5 2.75 C7.88 1 4.81 1 2.62 1.44 L2.62 14.12 C4.81 13.69 7.88 13.69 10.5 15.44 C13.12 13.69 16.19 13.69 18.38 14.12 L18.38 1.44 C16.19 1 13.12 1 10.5 2.75 Z M10.5 2.75 L10.5 15.44"
   style activity-button
 node activity.spacer panel
   parent activity
   style spacer
+node activity.account button
+  parent activity
+  label Account
+  command view.pane.account
+  tooltip "Account: sign in or out"
+  icon "M10.5 1 C12.43 1 14 2.57 14 4.5 C14 6.43 12.43 8 10.5 8 C8.57 8 7 6.43 7 4.5 C7 2.57 8.57 1 10.5 1 M3.5 15.88 C4.38 11.5 16.62 11.5 17.5 15.88"
+  style activity-button
 node activity.settings button
   parent activity
   label Settings
   command view.settings
   tooltip "Settings (Ctrl+,)"
-  icon "M8 5.5 C9.4 5.5 10.5 6.6 10.5 8 C10.5 9.4 9.4 10.5 8 10.5 C6.6 10.5 5.5 9.4 5.5 8 C5.5 6.6 6.6 5.5 8 5.5 Z M7 1.5 L9 1.5 L9.4 3.4 L11 4.1 L12.6 3 L14 4.4 L12.9 6 L13.6 7.6 L15.5 8 L15.5 9 L13.6 9.4 L12.9 11 L14 12.6 L12.6 14 L11 12.9 L9.4 13.6 L9 15.5 L7 15.5 L6.6 13.6 L5 12.9 L3.4 14 L2 12.6 L3.1 11 L2.4 9.4 L0.5 9 L0.5 8 L2.4 7.6 L3.1 6 L2 4.4 L3.4 3 L5 4.1 L6.6 3.4 Z"
+  icon "M10.5 5.38 C11.95 5.38 13.12 6.55 13.12 8 C13.12 9.45 11.95 10.62 10.5 10.62 C9.05 10.62 7.88 9.45 7.88 8 C7.88 6.55 9.05 5.38 10.5 5.38 M10.5 -0.75 L10.5 1.88 M10.5 14.12 L10.5 16.75 M1.75 8 L4.38 8 M16.62 8 L19.25 8 M4.38 1.88 L6.12 3.62 M14.88 12.38 L16.62 14.12 M4.38 14.12 L6.12 12.38 M14.88 3.62 L16.62 1.88"
   style activity-button
+# --- end ui-shell icon bar ---
 node dock.left.split split
   parent body
   style dock-hsplit
@@ -2205,6 +2441,24 @@ node status.msg label
   parent status
   label "selected: 0"
   style status-msg
+# ui-shell (area A): the mockup's status segments. The core sets their text (staged edits,
+# the active PDK and version, the remote simulator host, a linked KLayout) or removes them.
+node status.staged label
+  parent status
+  style status-staged
+node status.spacer panel
+  parent status
+  style spacer
+node status.pdk label
+  parent status
+  style status-right
+node status.host label
+  parent status
+  style status-right
+node status.klayout label
+  parent status
+  style status-right
+# --- end ui-shell status ---
 
 # --- dialogs (roots; shown by UiState::set_dialog) --------------------------------------------------
 
@@ -2452,10 +2706,11 @@ node dialog.settings.done button
   command settings.done
   style dialog-button
 
-# --- store overlay (`view.store`, the Packages icon; store spec §4). This UI declares the frame; the
-# app adds the category chips under `dialog.store.cats`, the sections and rows under
-# `dialog.store.list` and the picked package's page under `dialog.store.detail` (classes store-*).
-# The install strip and the permission dialog are the core's (`core.store.*`, `core.grants`). ----
+# --- store overlay (`view.store`, the Packages icon; store spec §4; owner:
+# the store, ui pass 2026-11-07). This UI declares the frame; the app adds the category chips under
+# `dialog.store.cats`, the sections and tiles under `dialog.store.list` and the picked package's page
+# under `dialog.store.detail` (classes store-*, colours as generated `store.c.*` styles). The install
+# strip and the permission dialog are the core's (`core.store.*`, `core.grants`). ----
 
 node dialog.store dialog
   label Store
@@ -2471,6 +2726,16 @@ node dialog.store.tab.plugin tab
   label Plugins
   command store.tab.plugin
   style store-tab
+node dialog.store.tab.sim tab
+  parent dialog.store.tabs
+  label Simulators
+  command store.tab.sim
+  style store-tab
+node dialog.store.tab.pdk tab
+  parent dialog.store.tabs
+  label PDKs
+  command store.tab.pdk
+  style store-tab
 node dialog.store.tab.theme tab
   parent dialog.store.tabs
   label Themes
@@ -2479,7 +2744,16 @@ node dialog.store.tab.theme tab
 node dialog.store.head.spacer panel
   parent dialog.store.head
   style spacer
-node dialog.store.counts label
+node dialog.store.check button
+  parent dialog.store.head
+  label "Check for updates"
+  command pkg.check
+  tooltip "Fetch the store index and ask installed packages' sources for newer versions"
+  style store-check
+node dialog.store.n.installed label
+  parent dialog.store.head
+  style store-counts
+node dialog.store.n.updates label
   parent dialog.store.head
   style store-counts
 node dialog.store.x button
@@ -2488,33 +2762,54 @@ node dialog.store.x button
   command store.close
   tooltip "Close (Escape)"
   icon "M4 4 L12 12 M12 4 L4 12"
-  style settings-x
+  style store-x
 node dialog.store.body panel
   parent dialog.store
   style store-body
 node dialog.store.side panel
   parent dialog.store.body
   style store-side
+node dialog.store.top panel
+  parent dialog.store.side
+  style store-top
+node dialog.store.searchbar panel
+  parent dialog.store.top
+  style store-searchbar
+node dialog.store.searchicon button
+  parent dialog.store.searchbar
+  label Search
+  icon "M10.5 10.5 L14 14 M11.5 6.75 C11.5 9.4 9.4 11.5 6.75 11.5 C4.1 11.5 2 9.4 2 6.75 C2 4.1 4.1 2 6.75 2 C9.4 2 11.5 4.1 11.5 6.75"
+  style store-searchicon
 node dialog.store.search text_input
-  parent dialog.store.side
+  parent dialog.store.searchbar
   input store.search
-  tooltip "Search packages by name, description, publisher or category"
+  tooltip "Search by name, description, publisher or category"
   style store-search
+node dialog.store.sort dropdown
+  parent dialog.store.searchbar
+  label "Sort: installs"
+  tooltip "Order the list"
+  style store-sort
+node dialog.store.sort.installs item
+  parent dialog.store.sort
+  label installs
+  command store.sort.installs
+node dialog.store.sort.name item
+  parent dialog.store.sort
+  label name
+  command store.sort.name
 node dialog.store.cats panel
-  parent dialog.store.side
+  parent dialog.store.top
   style store-cats
 node dialog.store.list scroll
   parent dialog.store.side
   style store-list
+node dialog.store.note label
+  parent dialog.store.side
+  style store-note
 node dialog.store.detail scroll
   parent dialog.store.body
   style store-detail
-node dialog.store.foot panel
-  parent dialog.store
-  style settings-foot
-node dialog.store.note label
-  parent dialog.store.foot
-  style settings-hint
 
 # --- command palette (`view.palette`, F1). This UI declares the frame; the app
 # adds the ranked rows under `dialog.palette.list` as `item` nodes (title, current key as `accel`,
@@ -2802,168 +3097,515 @@ style settings-theme-on
   bg 90ee90
   radius 3
 
-# Store overlay: a wide modal, the list on the left, the picked package's page on the right.
+# Store overlay (owner: the store, ui pass 2026-11-07): a 1380 x 770
+# modal over a dimmed window, the list on the left, the picked package's page on the right. These
+# set the shape and the classic colours; themes recolour them.
 style store
   bg ececec
+  active-bg 0b0c0fb3
   dir column
   pad 0
   pad-y 0
   gap 0
   border 1
   border-color 404040
-  min-width 1180
+  radius 10
+  min-width 1380
 
 style store-head
   bg d9d9d9
   dir row
-  height 36
+  height 44
   pad 10
-  gap 12
+  pad-y 0
+  gap 4
 
 style store-tabs
   bg d9d9d9
   dir row
-  gap 2
+  height 44
+  pad-y 0
+  gap 4
 
 style store-tab
   pad 12
-  height 22
+  pad-y 0
+  height 44
+  font 13
   border 0
-  active-bg ffffff
+  underline 2
+  border-color 3672d4
+  fg 505050
+  active-fg 000000
+  active-bg d9d9d9
 
 style store-counts
+  font 13
+  fg 505050
+  pad 7
+
+style store-check
+  font 13
+  pad 7
+  height 26
+  radius 3
+  bg 00000000
+  fg 3672d4
+  hover-bg cfcfcf
+
+style store-banner
   font 12
-  fg 404040
+  pad 10
+  pad-y 6
+  radius 4
+  bg fff4d6
+  fg 7a5a00
+
+style store-mode-ok
+  font 11
+  face mono
+  fg 2e7d32
+
+style store-mode-off
+  font 13
+  face bold
+  fg 909090
+
+style store-x
+  pad 6
+  height 28
+  width 28
+  hover-bg cfcfcf
+  radius 3
 
 style store-body
   dir row
   stretch 1
-  height 600
+  height 726
   gap 0
 
 style store-side
-  bg e0e0e0
+  bg e4e4e4
   dir column
   width 380
-  pad 8
-  pad-y 8
-  gap 6
+  pad 0
+  gap 0
+
+style store-top
+  dir column
+  pad 12
+  pad-y 10
+  gap 8
+
+style store-searchbar
+  dir row
+  bg ffffff
+  border 1
+  border-color a0a0a0
+  radius 5
+  pad 6
+  height 28
+  gap 4
+
+style store-searchicon
+  pad 2
+  width 20
+  height 22
+  bg ffffff
+  hover-bg ffffff
+  fg 505050
 
 style store-search
-  width 362
-  pad 8
-  pad-y 5
-  border 1
+  grow 1
+  font 13
+  border 0
+  bg ffffff
+  pad 2
+
+style store-sort
+  font 11
+  fg 404040
+  bg ffffff
+  border 0
+  pad 4
 
 style store-cats
   dir column
-  gap 4
+  gap 6
 
 style store-cats-row
   dir row
-  gap 4
+  gap 6
 
 style store-chip
-  pad 8
+  pad 9
   height 20
   font 11
   border 1
   radius 10
   bg f4f4f4
+  border-color b0b0b0
 
 style store-chip-on
-  pad 8
+  pad 9
   height 20
   font 11
   border 1
   radius 10
   bg c3d3f0
   active-bg c3d3f0
+  border-color 7090c0
 
 style store-list
   dir column
   grow 1
-  gap 2
+  gap 0
+
+style store-section-row
+  dir row
+  pad 14
+  pad-y 6
 
 style store-section
   font 11
-  pad-y 6
   fg 505050
 
-style store-item
-  font 12
-  pad 8
-  pad-y 6
-  hover-bg d0d0d0
+style store-tile
+  dir row
+  pad 14
+  pad-y 8
+  gap 10
+  bg e4e4e4
 
-style store-item-on
+style store-tile-on
+  dir row
+  pad 14
+  pad-y 8
+  gap 10
+  bg d0d0d0
+  mark 2
+  active-fg 3672d4
+
+style store-tile-col
+  dir column
+  grow 1
+  gap 1
+
+style store-line
+  dir row
+  gap 6
+
+style store-name
+  font 13
+  face bold
+
+style store-ver
+  font 11
+  face mono
+  fg 606060
+
+style store-tag
+  font 11
+  fg 606060
+
+style store-tag-paid
+  font 11
+  fg 202020
+
+style store-desc
   font 12
-  pad 8
+  fg 303030
+
+style store-meta
+  font 11
+  fg 606060
+
+style store-act
+  font 11
+  pad 7
+  height 16
+  radius 3
+  bg 3672d4
+  fg ffffff
+
+style store-act-ghost
+  font 11
+  pad 7
+  height 16
+  radius 3
+  border 1
+  border-color a0a0a0
+  fg 606060
+
+style store-icon-img
+  width 42
+  height 42
+
+style store-icon-big-img
+  width 96
+  height 96
+
+style store-shots
+  dir row
+  gap 12
+
+style store-shot
+  dir column
+  width 200
+  gap 4
+
+style store-caption
+  font 11
+  fg 606060
+
+style store-rule
+  height 1
+  bg d4d4d4
+
+style store-note
+  font 11
+  fg 808080
+  pad 14
   pad-y 6
-  bg c3c3c3
 
 style store-hint
   font 12
   fg 606060
-  pad 12
+  pad 26
+  pad-y 20
 
 style store-detail
   dir column
   grow 1
-  pad 20
-  pad-y 16
-  gap 12
+  gap 0
+  bg ececec
 
 style store-d-head
   dir row
-  gap 16
-
-style store-d-icon
-  width 72
-  height 72
-  font 26
-  bg 2f6fd0
-  fg ffffff
-  radius 8
+  pad 26
+  pad-y 22
+  gap 18
 
 style store-d-titles
   dir column
   grow 1
-  gap 6
+  gap 5
 
 style store-d-name
-  font 22
+  font 24
+  face bold
+
+style store-d-ver
+  font 13
+  face mono
+  fg 606060
+
+style store-d-metarow
+  dir row
+  gap 14
 
 style store-d-meta
-  font 12
-  fg 505050
+  font 13
+  fg 606060
+
+style store-d-verified
+  font 13
+  fg 3672d4
+
+style store-d-vicon
+  width 16
+  height 18
+  pad 0
+  bg ececec
+  hover-bg ececec
+  fg 3672d4
 
 style store-d-summary
   font 13
+  fg 303030
+
+style store-ptabs
+  dir row
+  pad 26
+  gap 2
+
+style store-ptab
+  pad 12
+  height 34
+  font 13
+  border 0
+  underline 2
+  border-color 202020
+  fg 505050
+  active-fg 000000
+  active-bg ececec
+  bg ececec
 
 style store-d-body
   dir row
-  gap 20
+  pad 26
+  pad-y 16
+  gap 26
 
-style store-d-readme
-  width 470
-  font 13
+style store-d-main
+  dir column
+  grow 1
+  gap 8
 
 style store-d-side
   dir column
-  width 240
-  gap 4
+  width 260
+  gap 6
+
+style store-d-readme
+  font 13
 
 style store-f-title
   font 11
-  fg 505050
-  pad-y 6
+  fg 606060
+  pad-y 4
 
-style store-f-row
+style store-price
+  font 20
+  face bold
+
+style store-chiprow
+  dir row
+  gap 5
+
+style store-chip-s
+  font 11
+  pad 7
+  height 18
+  radius 3
+  bg dcdcdc
+
+style store-grant
+  font 11
+  face mono
+  pad 6
+  height 18
+  radius 3
+  bg f3e6c4
+  fg 6a5210
+
+style store-kv
+  dir row
+  gap 10
+
+style store-k
+  width 90
+  font 12
+  fg 606060
+
+style store-v
   font 12
 
-style store-f-code
+style store-k-mono
+  width 130
+  font 12
+  face mono
+  fg 606060
+
+style store-v-mono
+  font 12
+  face mono
+
+style store-code
   font 11
+  face mono
+  bg ffffff
+  border 1
+  border-color c0c0c0
+  radius 5
+  pad 10
+  pad-y 8
+  width 250
+
+style store-preview
+  dir column
+  border 1
+  border-color c0c0c0
+  radius 6
+  pad 0
+
+style store-h3
+  font 14
+  face bold
+  pad-y 4
+
+style store-mode
+  dir column
+  border 1
+  border-color c0c0c0
+  radius 6
+  pad 12
+  pad-y 10
+  gap 5
+
+style store-mode-on
+  dir column
+  border 1
+  border-color 3672d4
+  bg e2eaf7
+  radius 6
+  pad 12
+  pad-y 10
+  gap 5
+
+style store-radio
+  width 16
+  height 18
+  pad 0
+  bg 00000000
+  hover-bg 00000000
+  fg 808080
+
+style store-radio-on
+  width 16
+  height 18
+  pad 0
+  bg 00000000
+  hover-bg 00000000
+  fg 3672d4
+
+style store-mode-t
+  font 13
+  face bold
+
+style store-mode-s
+  font 12
+  fg 606060
+
+style store-mode-mono
+  font 11
+  face mono
+  fg 606060
+
+style store-field
+  width 220
+  font 12
+  pad 6
+  border 1
+  border-color a0a0a0
+  bg ffffff
+
+style store-button
+  pad 12
+  height 24
+  font 13
+  radius 4
+  bg dcdcdc
+  hover-bg cfcfcf
+
+style store-button-accent
+  pad 12
+  height 24
+  font 13
+  radius 4
+  bg 3672d4
+  fg ffffff
+  hover-bg 2c4a80
 
 style settings-foot
   bg d9d9d9
@@ -3074,3 +3716,267 @@ style canvas.light.grid
   fg 909090
 style canvas.light.sel
   fg 202020
+
+# === area C (ui-packages-layout): Packages sidebar + detail panel, Layout sidebar, KLayout
+# panel, Ctrl+K bar. The core writes these nodes (crate `editor`:
+# packages, bridge); here their layout and the classic look, `ui/themes/modern` the dark one.
+
+style pkg-top
+  dir row
+  gap 6
+  pad 12
+  pad-y 4
+style pkg-check
+  pad 3
+  width 24
+  height 22
+  radius 3
+style pkg-filter
+  width 186
+  pad 6
+  pad-y 3
+style pkg-page
+  grow 1
+  dir column
+  pad-y 2
+style pkg-section
+  dir row
+  height 26
+  pad 12
+  pad-y 4
+style pkg-section-title
+  font 11
+  fg 555555
+style pkg-count
+  font 11
+  fg 555555
+style pkg-row
+  pad 14
+  height 23
+  gap 12
+  font 13
+  accel-fg 707070
+style pkg-row-on
+  pad 14
+  height 23
+  gap 12
+  font 13
+  accel-fg 2e7d32
+style pkg-row-new
+  pad 14
+  height 23
+  gap 12
+  font 13
+  accel-fg 1f5fa8
+style pkg-row-sel
+  pad 14
+  height 23
+  gap 12
+  font 13
+  bg c8d6ec
+  accel-fg 707070
+style pkg-row-on-sel
+  pad 14
+  height 23
+  gap 12
+  font 13
+  bg c8d6ec
+  accel-fg 2e7d32
+style pkg-row-new-sel
+  pad 14
+  height 23
+  gap 12
+  font 13
+  bg c8d6ec
+  accel-fg 1f5fa8
+style pkg-detail
+  bg f4f4f4
+  dir column
+  grow 1
+style pkg-head
+  dir row
+  height 26
+  pad 10
+  gap 12
+  bg e0e0e0
+style pkg-title
+  font 13
+style pkg-sub
+  font 12
+  fg 707070
+style pkg-action
+  pad 3
+  height 22
+  font 13
+style pkg-body
+  dir row
+  grow 1
+  stretch 1
+style pkg-form
+  dir column
+  grow 1
+  pad 14
+  pad-y 10
+  gap 10
+style pkg-lua
+  dir column
+  grow 1
+  pad 14
+  pad-y 10
+  gap 6
+  border 1
+  border-color d0d0d0
+style pkg-way
+  dir row
+  gap 6
+style pkg-way-col
+  dir column
+  gap 3
+style pkg-way-fields
+  dir row
+  gap 6
+  pad 22
+style pkg-radio
+  pad 0
+  width 16
+  height 16
+style pkg-field
+  width 160
+  pad 6
+  pad-y 2
+style pkg-button
+  pad 8
+  height 22
+  border 1
+  border-color a0a0a0
+style pkg-dim
+  font 12
+  fg 707070
+style pkg-mono
+  font 12
+  fg 707070
+style pkg-grants
+  font 12
+  fg 707070
+style pkg-lua-file
+  font 12
+  fg 707070
+style pkg-code
+  font 12
+style pkg-ok
+  font 13
+  fg 2e7d32
+style pkg-bad
+  font 13
+  fg c62828
+style pkg-new
+  font 13
+  fg 1f5fa8
+style lay-sub
+  font 13
+  fg 707070
+  pad 12
+  pad-y 3
+style lay-ok
+  pad 14
+  height 23
+  font 13
+  fg 2e7d32
+style lay-bad
+  pad 14
+  height 23
+  font 13
+  fg c62828
+style lay-bad-sel
+  pad 14
+  height 23
+  font 13
+  fg 000000
+  bg c8d6ec
+style lay-panel
+  bg f4f4f4
+  dir column
+  grow 1
+  gap 6
+style lay-head
+  dir row
+  height 26
+  pad 10
+  gap 10
+style lay-title
+  font 13
+style lay-mono
+  font 12
+  fg 707070
+style lay-net
+  font 12
+  fg 8a6d00
+style lay-view
+  dir column
+  pad 10
+style lay-tr
+  dir row
+  pad 10
+  height 22
+style lay-tr-sel
+  dir row
+  pad 10
+  height 22
+  bg c8d6ec
+style lay-th-item
+  width 150
+  font 12
+  fg 707070
+style lay-th
+  width 130
+  font 12
+  fg 707070
+style lay-td-item
+  width 150
+  font 12
+style lay-td
+  width 130
+  font 12
+style lay-td-bad
+  width 130
+  font 12
+  fg c62828
+style lay-why
+  font 12
+  fg 707070
+  pad 10
+style lay-grow
+  grow 1
+style lay-actions
+  dir row
+  gap 6
+  pad 10
+  pad-y 8
+style lay-button
+  pad 8
+  height 24
+  border 1
+  border-color a0a0a0
+style lay-ask
+  dir row
+  gap 7
+  pad 7
+  pad-y 5
+  bg d9d9d9
+  border 1
+  border-color 808080
+  radius 6
+style lay-ask-key
+  font 12
+  fg 707070
+style lay-ask-field
+  width 440
+  pad 6
+  pad-y 3
+style lay-ask-go
+  pad 8
+  height 22
+  bg 1a5fb4
+  fg ffffff
+  radius 3
+# === end area C

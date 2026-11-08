@@ -95,9 +95,10 @@ key Alt+J symbol.list_of_nets.create_labels_from_highlight_nets
 key Ctrl+Alt+J symbol.list_of_nets.print_list_of_highlight_nets_with_buses
 key Alt+Shift+J symbol.list_of_nets.create_labels_from_highlight_nets_with_i
 
-# k: highlight selected nets; Ctrl+k: unhighlight them; Alt+k: select the whole net
+# k: highlight selected nets; Alt+k: select the whole net; Ctrl+k: the generate bar over the
+# canvas (layout.ask; Highlight -> Un-highlight selected nets keeps its menu row)
 key K highlight.highlight_selected_net_pins
-key Ctrl+K highlight.un_highlight_selected_net_pins
+key Ctrl+K layout.ask
 key Alt+K highlight.select_hilight_nets_pins
 # K: clear all highlights; Ctrl+K: highlight with drill (no `propag` pins here: highlights are
 # hierarchy-wide already, so it highlights)
