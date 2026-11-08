@@ -3,6 +3,7 @@
 // Build (freestanding wasm32, no WASI, no entry point; docs/plugins/languages.md):
 //
 //   odin build . -target:freestanding_wasm32 -no-entry-point -o:size -out:hello.wasm \
+//     -source-code-locations:filename \
 //     -collection:schemify=../../../crates/protocol/abi/sdk/odin
 //
 // The collection points at Schemify's Odin library (crates/protocol/abi/sdk/odin). In your

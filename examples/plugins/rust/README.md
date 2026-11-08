@@ -7,7 +7,8 @@ connection, with their names (`2 single-connection nets: c, d`).
 
 ```sh
 rustup target add wasm32-unknown-unknown
-cargo build --release
+RUSTFLAGS="--remap-path-prefix=$HOME/.cargo=/cargo --remap-path-prefix=$PWD=/build" \
+  cargo build --release   # no path of this machine in the module
 cp target/wasm32-unknown-unknown/release/hello.wasm .
 schemify plugin check .
 ```

@@ -22,6 +22,21 @@ jobs:
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace
+  paths:
+    # A committed module must not carry a build machine's home directory (panic and source
+    # locations embed paths): rebuild it with the flags in docs/plugins/languages.md.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: no /home/ or /Users/ in committed .wasm
+        run: |
+          bad="$(git ls-files -z '*.wasm' | xargs -0 -r grep -l -a -E '/home/|/Users/' || true)"
+          if [ -n "$bad" ]; then
+            printf '::error::a build path is embedded in %s\n' $bad
+            exit 1
+          fi
   guests:
     runs-on: ubuntu-latest
     steps:

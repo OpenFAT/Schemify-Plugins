@@ -1,5 +1,6 @@
 // The Odin library's conformance guest (../../CONFORMANCE.md). Build, in this directory:
-// odin build . -target:freestanding_wasm32 -no-entry-point -o:size -out:conformance.wasm
+// odin build . -target:freestanding_wasm32 -no-entry-point -o:size -out:conformance.wasm \
+//   -source-code-locations:filename
 package conformance
 
 import sch "../schemify"

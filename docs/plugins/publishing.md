@@ -157,8 +157,8 @@ user allows it again; until then the old version stays.
 ### Review
 
 The index's pull-request checks read the format exactly as the store does, fetch every file
-and compare its sha256, enforce the image rules, compare grants with your previous release and
-refuse names that may not appear. A reviewer then reads it. These always get a manual review:
+and compare its sha256, enforce the image rules and compare grants with your previous release.
+A reviewer then reads it, and Scouren checks it again before publishing. These always get a manual review:
 a new publisher, a new grant and any risky grant (`spawn:*`, `network`, `write_project`,
 `read:*`, `commands`), a paid listing, and a removed listing. Releases already listed are never
 edited. No NDA content, ever: nothing from a foundry kit (model cards, rules, decks) in the
