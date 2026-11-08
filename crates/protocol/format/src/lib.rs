@@ -3,8 +3,9 @@
 //!
 //! Owns no tables. Parses bytes into a flat record model ([`Document`]), writes the
 //! canonical form ([`write()`]), and merges/diffs at the record level ([`merge3`],
-//! [`diff`]) keyed by kind + id or kind + name. [`parse_prefix`] reads only a symbol
-//! interface without touching the schematic. Normative spec: `docs/spec/format.md`.
+//! [`diff`], and as text [`diff_text`]) keyed by kind + id or kind + name. [`parse_prefix`]
+//! reads only a symbol interface without touching the schematic. Normative spec:
+//! `docs/spec/format.md`.
 //!
 //! The schema is data: [`FileKind::records`] lists the allowed [`RecordKind`]s and each
 //! kind's [`RecordSchema`] gives its rank, identity rule, positional shape and known
@@ -59,6 +60,7 @@ mod reader;
 mod records;
 mod scalar;
 mod schema;
+mod semdiff;
 mod writer;
 
 pub use diag::{Code, Diagnostic, NO_RECORD, ParseError, ParseWordError};
@@ -72,4 +74,5 @@ pub use schema::{
     AttrSchema, FileKind, KeyRule, RANK_INHERIT, RANK_POSITIONAL, RecordKind, RecordSchema, Rest,
     SHAPE_FORMS, Shape, Ty, shape_arity,
 };
+pub use semdiff::diff_text;
 pub use writer::{write, write_into};

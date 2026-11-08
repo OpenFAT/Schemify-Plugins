@@ -2,7 +2,7 @@
 # The editor and the core live in a separate, private repository.
 [workspace]
 resolver = "3"
-members = ["crates/protocol/format", "crates/protocol/abi"]
+members = ["crates/protocol/format", "crates/protocol/abi", "sdk/rust/vcs"]
 
 [workspace.package]
 version = "1.0.1"
