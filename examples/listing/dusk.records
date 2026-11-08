@@ -1,0 +1,16 @@
+# Dusk: a dark canvas with blue wires and green symbols (the example store listing,
+# docs/plugins/publishing.md). Records only: nothing in a theme runs.
+
+color canvas 16181c
+color wire 4f8fc9
+color sym 8fb84a
+color grid 2c2f36
+
+style canvas.bg
+  fg @canvas
+style canvas.wire
+  fg @wire
+style canvas.symbol
+  fg @sym
+style canvas.grid
+  fg @grid

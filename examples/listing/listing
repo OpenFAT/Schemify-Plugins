@@ -1,0 +1,14 @@
+schemify-listing 1
+publisher acme
+license MIT
+categories dark
+summary A dark canvas with blue wires and green symbols.
+icon icon.png
+banner banner.png
+screenshot screenshot.png An amplifier on the Dusk canvas
+image screenshot.png
+includes canvas
+variants dark
+token canvas.bg 16181c
+token canvas.wire 4f8fc9
+token canvas.symbol 8fb84a

@@ -1,0 +1,5 @@
+# Changelog
+
+## 1.0.0 - 2026-11-07
+
+- First release: canvas, wire, symbol and grid colours.
