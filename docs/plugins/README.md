@@ -7,6 +7,7 @@ A Schemify plugin is a wasm module ([plugin ABI](../spec/plugin-abi.md)) that li
 | [Languages](languages.md) | write a plugin in Rust, C, C++, Zig, Odin, Go, TypeScript, Nim, D or Swift, starting from a template in [examples/plugins/](../../examples/plugins) |
 | [Repository layout](repository.md) | start a plugin repository: the files it needs, how it depends on Schemify's crates, where a second interface goes |
 | [Testing](testing.md) | test a plugin on your machine and in CI, against a local Schemify checkout and against Schemify's `main` |
+| [Version control](vcs.md) | add a version-control system (the Source control pane, Explorer marks, diffs, who changed each line) with the `schemify-vcs` helper crate |
 | [Publishing](publishing.md) | tag a release, let users install it from `init.lua` or a project manifest, and move to a newer Schemify |
 
 ## Examples

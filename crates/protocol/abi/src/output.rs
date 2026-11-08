@@ -11,7 +11,7 @@
 //!   `Output::parse(chunk: &'chunk str) -> Result<Output<'chunk>, Code>`
 //! - `pub struct Out`: `new`, `as_str`, `into_string`, `contribute`, `contribute_scoped`,
 //!   `contribute_ui`, `contribute_commands`, `edit`, `stage`, `run`, `timer`, `log`, `log_at`,
-//!   `state`, `command`
+//!   `state`, `command`, `text_tab`
 
 use std::borrow::Cow;
 use std::fmt::Arguments;
@@ -82,6 +82,14 @@ pub enum Output<'chunk> {
         name: Cow<'chunk, str>,
         /// Its argument, unescaped; empty when absent.
         arg: Cow<'chunk, str>,
+    },
+    /// `text <title>` + verbatim body: open (or replace) a read-only text tab of this
+    /// plugin's titled `title` showing `body`. Added 2026-11-08 (plugin-abi §11, 26).
+    Text {
+        /// The tab's title (one line; the host sanitizes it).
+        title: Cow<'chunk, str>,
+        /// The text shown (verbatim lines joined with LF); may be empty.
+        body: String,
     },
 }
 
@@ -210,6 +218,17 @@ impl<'chunk> Output<'chunk> {
                 values.end()?;
                 each_attr(body, |_, _| Err(Code::Parse))?;
                 Output::Command { name, arg }
+            }
+            "text" => {
+                let title = values.need()?;
+                values.end()?;
+                if title.is_empty() {
+                    return Err(Code::Parse);
+                }
+                Output::Text {
+                    title,
+                    body: text::verbatim_body(body)?,
+                }
             }
             _ => return Err(Code::Parse),
         };
@@ -356,6 +375,22 @@ impl Out {
         }
         self.text.push('\n');
         self.debug_check_record(start);
+    }
+
+    /// Opens a read-only text tab titled `title` showing `body`, or replaces the one this
+    /// plugin opened under that title (a plugin never replaces another's tab). The host
+    /// refuses a body over 1 MiB (`E_SPACE`) and an empty title (`E_PARSE`).
+    pub fn text_tab(&mut self, title: &str, body: &str) {
+        let start = self.text.len();
+        self.text.push_str("text ");
+        text::push_value(&mut self.text, title);
+        self.text.push('\n');
+        text::push_verbatim(&mut self.text, body);
+        debug_assert_eq!(
+            Output::parse(&self.text[start..]).is_ok(),
+            !title.is_empty(),
+            "a text record parses back exactly when it has a title"
+        );
     }
 }
 

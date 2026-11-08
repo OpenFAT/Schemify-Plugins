@@ -18,6 +18,7 @@ Schemify's editor and core are now developed privately. This repository, which u
 | `crates/protocol/format` | The Schemify file format: one line per object, sorted by a stable id. Read and write `.shcomp`, `.shbench` and project files. |
 | `crates/protocol/abi` | The plugin ABI, plus the guest SDK for Rust (`features = ["guest"]`). |
 | `crates/protocol/abi/sdk` | Guest SDKs for C, Zig, Go, Odin and AssemblyScript, each with a conformance suite. |
+| `sdk/rust/vcs` | `schemify-vcs`: what every version-control plugin shares (the backend rows for git, Mercurial, Jujutsu, Subversion and Perforce, the Source control pane, the annotate file, the driver). See `docs/plugins/vcs.md`. |
 | `examples/plugins` | A small working plugin in each of ten languages. Copy one to start. |
 | `ui/default-plugin` | The editor's default UI as a reference UI pack: every node id and style a theme can change. |
 | `ui/themes/modern` | A complete theme package: records only, with `color`/`size` tokens and `.light` variants. Copy it to start a theme. |
