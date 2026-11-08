@@ -1,0 +1,19 @@
+entry dusk
+publisher acme
+kind theme
+license MIT
+categories dark
+summary A dark canvas with blue wires and green symbols.
+readme https://github.com/acme/dusk/releases/download/v1.0.0/README.md
+icon https://github.com/acme/dusk/releases/download/v1.0.0/icon.png 475dcf065889f972668f1da0bdad3ba294125ea4a17a53663d809460b0da1b4c
+banner https://github.com/acme/dusk/releases/download/v1.0.0/banner.png 3431d0eca8fc6a3868f0a074054fd8137e0a933391d9750adfe459224b273fa8
+screenshot https://github.com/acme/dusk/releases/download/v1.0.0/screenshot.png aed440070ef6cf9d51bad6c90d26bd41f50615043edcc33293bcbe80c5308d40 An amplifier on the Dusk canvas
+changelog https://github.com/acme/dusk/releases/download/v1.0.0/CHANGELOG.md
+image https://github.com/acme/dusk/releases/download/v1.0.0/screenshot.png aed440070ef6cf9d51bad6c90d26bd41f50615043edcc33293bcbe80c5308d40
+includes canvas
+variants dark
+token canvas.bg 16181c
+token canvas.wire 4f8fc9
+token canvas.symbol 8fb84a
+release 1.0.0 git https://github.com/acme/dusk 0123456789abcdef0123456789abcdef01234567
+asset 346 2026-11-08

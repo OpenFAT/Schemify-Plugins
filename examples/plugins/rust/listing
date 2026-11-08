@@ -1,0 +1,6 @@
+schemify-listing 1
+publisher your-org
+license MIT
+categories docs
+summary Count nets (Tools menu) logs the nets that have a single connection.
+icon icon.png

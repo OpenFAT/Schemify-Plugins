@@ -64,7 +64,7 @@ Load it in the app from its folder ([testing.md](testing.md), In the app) and ru
 
 ### Rust
 
-Build with `cargo build --release`: `.cargo/config.toml` sets the `wasm32-unknown-unknown` target, which needs `rustup target add wasm32-unknown-unknown`. Cargo can't choose where its output goes, so copy `target/wasm32-unknown-unknown/release/hello.wasm` next to `schemify.project`. The SDK and `std` cost about 30 KB of module size; the other libraries cost 5 to 10 KB.
+Build with `cargo build --release`: `.cargo/config.toml` sets the `wasm32-unknown-unknown` target, which needs `rustup target add wasm32-unknown-unknown`. Panic locations carry source paths, so build a module you publish with `RUSTFLAGS="--remap-path-prefix=$HOME/.cargo=/cargo --remap-path-prefix=$PWD=/build"`: it then names no directory of your machine. Cargo can't choose where its output goes, so copy `target/wasm32-unknown-unknown/release/hello.wasm` next to `schemify.project`. The SDK and `std` cost about 30 KB of module size; the other libraries cost 5 to 10 KB.
 
 ### C
 
@@ -90,7 +90,7 @@ Build with `zig build` (Zig 0.16). The plugin calls `comptime { schemify.exportP
 Build with:
 
 ```sh
-odin build . -target:freestanding_wasm32 -no-entry-point -o:size -collection:schemify=<sdk/odin>
+odin build . -target:freestanding_wasm32 -no-entry-point -o:size -source-code-locations:filename -collection:schemify=<sdk/odin>
 ```
 
 The library exports `schemify_abi` and `schemify_alloc`. The plugin writes the one-line export `schemify_on_event :: proc "contextless" (ptr, n: u32) -> u64 { return schemify.on_event(ptr, n, on_event) }`, and `schemify_call` the same way. That is because `@(init)` procedures never run without an entry point.
