@@ -1,141 +1,209 @@
-# Schemify "Modern": a records-only theme (config spec §5 Themes), bundled with the editor and
-# picked with View → Modern theme or `schemify.opt.theme = "modern"`. It restyles; nodes, keys
-# and accelerators are untouched (D25).
-# ponytail: one chrome palette (dark) for both canvas themes; add `<selector>.light` variants to
-# give the light canvas a light chrome.
+# Schemify "Modern Dark" (id `modern`): the default theme. A records-only theme (config spec §5
+# Themes) bundled with the editor; `schemify.opt.theme = "xschem"` (View → Classic theme)
+# switches to the default UI alone. It restyles; nodes, keys and accelerators are untouched
+# (D25). Selectors `X.light` lay the light variant over `X` while the canvas is light.
 
-# --- tokens: one accent (4c8dff) over neutral greys ----------------------------------------------
+# --- ui-shell (area A): tokens, the mockup's CSS variables -----------------------------------------
 
-color bg 15171b
-color surface 1e2127
-color raised 23262c
-color hover 2a2e35
+color chrome 1d1f24
+color chrome2 24272d
+color canvas 16181c
+color line 2c2f36
+color line2 3a3e46
+color text d0d3d8
+color dim 8a909a
+color faint 5d626b
+color blue 4ea3e0
+color wire 4f8fc9
+color sym 8fb84a
+color pin e5534b
+color sel 2c4a80
+color acc 3d7be0
+color ok 5fbf6a
+color bad e06c66
+color input 121418
+color row-on 2a2d33
+# A filled button with white text: @acc darkened to 4.65:1 (white on 3d7be0 is 4.11:1).
+color acc-fill 3672d4
+
+# The names the other sections were written with, mapped onto the mockup's.
+color bg 16181c
+color surface 1d1f24
+color raised 24272d
+color hover 2a2d33
 color active 2f343c
-color line 3a3f48
-color text d4d7dc
-color text-2 c9cdd3
-color muted 8b919a
+color text-2 c5c9d0
+color muted 8a909a
 color bright ffffff
-color accent-bg 2f4a7a
-color accent-fg 7fb0ff
-color error ff6b6b
+color accent-bg 2c4a80
+color accent-fg 4ea3e0
+color error e06c66
 
-# --- chrome: neutral greys, one accent (4c8dff) -----------------------------------------------------
+# --- ui-shell: chrome (menu bar, toolbar, tabs, view switch, status bar) ----------------------
 
 style *
   fg @text
-  accel-fg @muted
-  hover-bg @hover
+  accel-fg @dim
+  hover-bg @row-on
   active-bg @active
-  border-color @line
+  border-color @line2
 
 style window
-  bg @bg
+  bg @canvas
 
 style menubar
-  bg @surface
+  bg @chrome
+  height 26
+  pad 9
+  gap 0
 
 style menu-title
-  hover-bg @hover
-  active-bg @active
+  pad 7
+  hover-bg @row-on
+  active-bg @row-on
 
 style menubar-dash
-  fg 5a606a
+  fg @faint
 
 style menubar-button
-  bg @surface
-  hover-bg @hover
+  bg @chrome
+  hover-bg @row-on
+  pad 4
 
 style menu
-  bg @raised
-  border-color @line
+  bg @chrome2
+  border-color @line2
 
 style item
-  hover-bg @active
+  hover-bg @sel
 
 style separator
-  fg @line
+  fg @line2
 
 style toolbar
-  bg @surface
+  bg @chrome
+  height 30
+  pad 6
+  gap 5
 
 style button
-  hover-bg @active
+  hover-bg @row-on
   radius 4
 
 style tabs
-  bg @surface
+  bg @chrome
+  height 22
+  pad 2
+  gap 2
 
 style tab
-  bg @surface
-  fg @muted
-  active-bg @active
-  active-fg @bright
+  bg @chrome2
+  fg @dim
+  active-bg @row-on
+  active-fg @text
+  hover-bg @row-on
   border 0
+  radius 0
+  pad 6
+  height 21
 
 style tab-new
-  bg @surface
-  fg @muted
+  bg @chrome
+  fg @dim
   border 0
+  radius 0
+  pad 6
+  height 21
 
 style canvas
-  bg @bg
+  bg @canvas
 
 style status
-  bg @surface
+  bg @chrome
+  height 24
+  pad 6
+  gap 8
 
 style status-field
-  bg @bg
-  border-color @line
+  bg @input
+  border-color @line2
+  width 46
+  font 12
+
+style status-right
+  fg @dim
+  font 12
+
+style status-staged
+  fg @ok
+  font 12
 
 style text_input
-  bg @bg
-  border-color @line
+  bg @input
+  border-color @line2
 
 style text_area
-  bg @bg
-  border-color @line
+  bg @input
+  border-color @line2
 
 style dialog
-  bg @raised
-  border-color @line
+  bg @chrome2
+  border-color @line2
   radius 6
 
 style dialog-button
   bg @active
-  hover-bg @line
+  hover-bg @line2
   radius 4
 
 style ctx-menu
-  bg @raised
-  border-color @line
+  bg @chrome2
+  border-color @line2
 
 style list-row
-  hover-bg @active
-  active-bg @accent-bg
+  hover-bg @row-on
+  active-bg @row-on
+  active-fg @bright
 
 style keys-panel
-  bg @raised
+  bg @chrome2
 
 style view-switch
-  bg @raised
-  border-color @line
-  radius 6
+  bg @chrome2
+  border-color @line2
+  radius 0
+  pad 0
+  pad-y 0
+  gap 0
 
 style viewsw
-  bg @raised
-  fg @muted
-  hover-bg @active
-  hover-fg @bright
+  bg @chrome2
+  fg @dim
+  hover-bg @row-on
+  hover-fg @text
+  radius 0
+  pad 11
+  height 22
+  font 12
 
 style viewsw-on
-  bg @accent-bg
+  bg @sel
   fg @bright
-  hover-bg @accent-bg
+  hover-bg @sel
+  radius 0
+  pad 11
+  height 22
+  font 12
 
 style viewsw-off
   fg 4a4f57
-  hover-bg @raised
+  hover-bg @chrome2
+  radius 0
+  pad 11
+  height 22
+  font 12
+
+# --- end ui-shell chrome ---
 
 # --- docs pane -----------------------------------------------------------------------------------
 
@@ -212,101 +280,244 @@ style docs-staged-bar
 style docs-staged
   fg 7fd18f
 
+# --- ui-shell: icon bar, docks, Explorer / Search / Source control / Account panes -------------
+
 style activity
-  bg @surface
+  bg @chrome
 
 style activity-button
-  fg @muted
-  hover-bg @hover
-  active-bg @active
-  active-fg @bright
+  fg @faint
+  hover-bg @chrome
+  hover-fg @text
+  active-bg @chrome
+  active-fg @text
+  mark 2
 
 style dock-hsplit
-  bg @hover
+  bg @line
+  hover-bg @acc
 
 style dock-vsplit
-  bg @hover
+  bg @line
+  hover-bg @acc
+
+style work
+  hover-bg @acc
 
 style dock
-  bg @surface
+  bg @chrome
 
 style dock-bar
-  bg @surface
+  bg @chrome
+  height 26
+  pad 12
 
 style dock-title
-  fg @muted
+  fg @dim
+  font 11
+  pad 0
+
+style dock-button
+  fg @dim
+  hover-bg @row-on
+  pad 2
+
+style dock-tab
+  fg @dim
+  hover-fg @text
+  hover-bg @chrome
+  active-fg @text
+  active-bg @chrome
+  font 11
+  pad 4
 
 style dock-pane
-  bg @surface
+  bg @chrome
 
 style dock-note
-  fg @muted
+  fg @dim
 
-style chat-pane
-  bg @surface
-
-style chat-off
+style tree-row
   fg @text
+  hover-bg @row-on
+  active-bg @row-on
+  active-fg @bright
 
-style chat-privacy
-  fg @accent-fg
+style tree-fill
+  fg @text
+  hover-bg @row-on
+  active-bg @row-on
+  active-fg @bright
+
+style tree-dim
+  fg @dim
+  hover-bg @row-on
+
+style search-input
+  bg @input
+  border-color @line2
+
+style tree-arrow
+  fg @dim
+  hover-bg @chrome
+
+style tree-indent
+  fg @dim
+
+style tree-mark
+  fg @dim
+  font 11
+  face mono
+
+style tree-section
+  fg @dim
+  font 11
+
+style scm-mark
+  fg @dim
+  font 11
+  face mono
+
+# --- end ui-shell docks ---
+
+# ===== ui-chat: the agent chat, the right panel ===========
+style chat-pane
+  bg 191b20
+
+style chat-title
+  fg d0d3d8
+
+style chat-sharing
+  fg 4ea3e0
 
 style chat-meter
-  fg @muted
+  fg 8a909a
+
+style chat-icon
+  fg 8a909a
+  hover-fg d0d3d8
+
+style chat-rule
+  bg 2c2f36
+
+style chat-off
+  fg dcdfe3
 
 style chat-user
-  bg @raised
-  border 1
-  border-color @line
+  bg 24272e
+  border-color 33373f
+
+style chat-chip
+  fg c5c9d0
+  bg 2c3038
+  border-color 393e47
+
+style chat-chip-name
+  fg c5c9d0
+
+style chat-chip-x
+  fg 8a909a
+  hover-fg d0d3d8
 
 style chat-user-text
-  fg @bright
+  fg e6e8eb
+
+style chat-thought-line
+  fg 8a909a
 
 style chat-text
-  fg @text
+  fg dcdfe3
 
 style chat-step
-  fg @text-2
-  hover-bg @hover
+  hover-bg 1e2026
 
 style chat-step-error
-  fg @error
-  hover-bg @hover
+  hover-bg 1e2026
+
+style chat-step-verb
+  fg 8a909a
+
+style chat-step-name
+  fg c5c9d0
+
+style chat-step-metric
+  fg 8a909a
+
+style chat-step-ok
+  fg 5fbf6a
+
+style chat-step-bad
+  fg e06c66
 
 style chat-detail
-  fg @text-2
-  bg @bg
+  fg c5c9d0
+  bg 15171b
 
 style chat-card
-  bg @bg
-  border-color @line
+  bg 1e2026
+  border-color 33373f
 
 style chat-card-title
-  fg @text
+  fg d0d3d8
+
+style chat-card-body
+  fg dcdfe3
 
 style chat-card-state
-  fg @muted
+  fg 8a909a
+
+style chat-plus
+  fg 5fbf6a
+
+style chat-minus
+  fg e06c66
 
 style chat-diff
-  fg @text-2
+  fg c5c9d0
+
+style chat-diff-add
+  fg a8dcb0
+  bg 1d3324
+
+style chat-diff-del
+  fg f0b0ab
+  bg 3a2023
 
 style chat-note
-  fg @muted
+  fg 8a909a
 
 style chat-task
-  fg @text-2
+  fg 8a909a
 
 style chat-working
-  fg @muted
+  fg 8a909a
 
 style chat-stop
-  fg @text
-  hover-bg @hover
-  border-color @line
+  fg d0d3d8
+  hover-bg 2a2e35
+  border-color 3a3e46
+
+style chat-dock
+  bg 1e2026
+  border-color 3b4048
+
+style chat-review-text
+  fg d0d3d8
 
 style chat-input
-  fg @text
-  bg @raised
+  fg d0d3d8
+  bg 1e2026
+  accel-fg 5d626b
+
+style chat-pill
+  fg c5c9d0
+  bg 2a2e35
+  hover-bg 33373f
+
+style chat-send
+  fg 16181c
+  bg d0d3d8
+  hover-bg ffffff
 
 style bottom-bar
   bg @raised
@@ -349,28 +560,29 @@ style results-pick
 style results-pick-sel
   bg @accent-bg
 
-# --- canvas: schemify-theme baseline (gate-checked) ------------------------------------------------
+# --- ui-shell: canvas, the mockup's colours (dark) and its light variant ---------------------------
+# Net labels share the wire layer (role 1), so they draw in @wire, not the mockup's @blue.
 
 style canvas.dark.0
-  fg @bg
+  fg @canvas
 style canvas.dark.1
-  fg 5aaeea
+  fg @wire
 style canvas.dark.3
-  fg @text-2
+  fg @text
 style canvas.dark.4
-  fg 8fc35f
+  fg @sym
 style canvas.dark.5
-  fg e2574c
+  fg @pin
 style canvas.dark.grid
-  fg 2c3036
+  fg 2e3138
 style canvas.dark.sel
   fg @bright
 style canvas.dark.8
-  fg 9406f9
+  fg ffd34d
 style canvas.dark.9
-  fg 06f906
+  fg 9406f9
 style canvas.dark.10
-  fg b8148f
+  fg bd1893
 style canvas.dark.12
   fg 7f75f0
 style canvas.dark.13
@@ -383,27 +595,27 @@ style canvas.dark.21
   fg e6196e
 
 style canvas.light.0
-  fg fbfbfa
+  fg f4f1ea
 style canvas.light.1
-  fg 1f5fbf
+  fg 1f5fa8
 style canvas.light.3
   fg 1e2126
 style canvas.light.4
-  fg 2f7d1f
+  fg 2e7d32
 style canvas.light.5
-  fg b3261e
+  fg c62828
 style canvas.light.grid
-  fg dcdcd8
+  fg d6d2c8
 style canvas.light.sel
   fg 000000
 style canvas.light.8
   fg 0606f9
 style canvas.light.9
-  fg 149cb8
+  fg 128ba5
 style canvas.light.10
   fg b81474
 style canvas.light.12
-  fg f906f9
+  fg e605e6
 style canvas.light.13
   fg 1c0495
 style canvas.light.15
@@ -411,7 +623,7 @@ style canvas.light.15
 style canvas.light.17
   fg 5c180a
 style canvas.light.21
-  fg 959504
+  fg 878704
 
 # --- cell settings panel --------------------------------------------------------------------------
 
@@ -580,87 +792,375 @@ style palette-empty
 style palette-count
   fg @muted
 
-# --- store overlay (marketplace mockups market-4..7: raised panel, accent chips) -----------------
+# --- store overlay (owner: the store, ui pass
+# 2026-11-07). Literal mockup colours: chrome 1d1f24, canvas 16181c, line 2c2f36, line2 3a3e46,
+# text d0d3d8, dim 8a909a, faint 5d626b, blue 4ea3e0, acc 3672d4. ------------------------------
 
 style store
-  bg @surface
-  border-color @line
-  radius 8
+  bg 1a1c21
+  active-bg 0b0c0fb3
+  border-color 3a3e46
 
 style store-head
-  bg @surface
+  bg 1d1f24
 
 style store-tabs
-  bg @surface
+  bg 1d1f24
 
 style store-tab
-  bg @surface
-  fg @muted
-  active-bg @surface
-  active-fg @bright
+  bg 1d1f24
+  fg 8a909a
+  active-bg 1d1f24
+  active-fg ffffff
+  hover-bg 24272d
+  border-color 3672d4
 
 style store-counts
-  fg @muted
+  fg 8a909a
+
+style store-check
+  fg 4ea3e0
+  hover-bg 2c2f36
+
+style store-banner
+  bg 3a3220
+  fg e0c070
+
+style store-mode-ok
+  fg 5fbf6a
+
+style store-mode-off
+  fg 5d626b
+
+style store-x
+  fg 8a909a
+  hover-bg 2a2e35
 
 style store-side
-  bg @surface
+  bg 1c1e23
+
+style store-searchbar
+  bg 121418
+  border-color 3a3e46
+
+style store-searchicon
+  fg 8a909a
+  bg 121418
+  hover-bg 121418
 
 style store-search
-  bg @bg
-  border-color @line
-  radius 4
+  fg d0d3d8
+  bg 121418
+
+style store-sort
+  fg 8a909a
+  hover-bg 24272d
+  bg 121418
 
 style store-chip
-  bg @raised
-  fg @text-2
-  border-color @line
+  bg 24272d
+  fg 8a909a
+  border-color 30343b
+  hover-bg 2a2e35
 
 style store-chip-on
-  bg @accent-bg
-  active-bg @accent-bg
-  fg @bright
-  active-fg @bright
-  border-color @accent-fg
+  bg 2c4a80
+  active-bg 2c4a80
+  fg ffffff
+  active-fg ffffff
+  border-color 2c4a80
 
 style store-section
-  fg @muted
+  fg 8a909a
 
-style store-item
-  bg @surface
-  fg @text
-  hover-bg @hover
+style store-tile
+  bg 1c1e23
 
-style store-item-on
-  bg @active
-  fg @bright
+style store-tile-on
+  bg 262a31
+  active-fg 3672d4
+
+style store-name
+  fg d0d3d8
+
+style store-ver
+  fg 8a909a
+
+style store-tag
+  fg 8a909a
+
+style store-tag-paid
+  fg d0d3d8
+
+style store-desc
+  fg b5b9c0
+
+style store-meta
+  fg 8a909a
+
+style store-act
+  bg 3672d4
+  fg ffffff
+
+style store-act-ghost
+  border-color 3a3e46
+  fg 8a909a
+
+style store-rule
+  bg 22252a
+
+style store-note
+  fg 5d626b
 
 style store-hint
-  fg @muted
+  fg 8a909a
 
 style store-detail
-  bg @bg
-
-style store-d-icon
-  bg @accent-bg
-  fg @bright
+  bg 1a1c21
 
 style store-d-name
-  fg @bright
+  fg d0d3d8
+
+style store-d-ver
+  fg 8a909a
 
 style store-d-meta
-  fg @muted
+  fg 8a909a
+
+style store-d-verified
+  fg 4ea3e0
+
+style store-d-vicon
+  fg 4ea3e0
+  bg 1a1c21
+  hover-bg 1a1c21
 
 style store-d-summary
-  fg @text-2
+  fg c5c9d0
+
+style store-ptab
+  fg 8a909a
+  active-fg ffffff
+  hover-bg 24272d
+  border-color d0d3d8
+  bg 1a1c21
+  active-bg 1a1c21
 
 style store-d-readme
-  fg @text
+  fg c5c9d0
 
 style store-f-title
-  fg @muted
+  fg 8a909a
 
-style store-f-row
-  fg @text-2
+style store-price
+  fg d0d3d8
 
-style store-f-code
-  fg @text-2
+style store-chip-s
+  bg 2a2e35
+  fg d0d3d8
+
+style store-grant
+  bg 2a2416
+  fg e3c27a
+
+style store-k
+  fg 8a909a
+
+style store-v
+  fg d0d3d8
+
+style store-k-mono
+  fg 8a909a
+
+style store-v-mono
+  fg d0d3d8
+
+style store-code
+  bg 121418
+  border-color 2c2f36
+  fg c5c9d0
+
+style store-preview
+  border-color 3a3e46
+
+style store-h3
+  fg d0d3d8
+
+style store-mode
+  border-color 3a3e46
+
+style store-mode-on
+  border-color 3672d4
+  bg 1d2533
+
+style store-radio
+  fg 8a909a
+
+style store-radio-on
+  fg 4ea3e0
+
+style store-mode-t
+  fg d0d3d8
+
+style store-mode-s
+  fg 8a909a
+
+style store-mode-mono
+  fg 8a909a
+
+style store-field
+  bg 121418
+  border-color 3a3e46
+  fg d0d3d8
+
+style store-button
+  bg 2a2e35
+  fg d0d3d8
+  hover-bg 353a42
+
+style store-button-accent
+  bg 3672d4
+  fg ffffff
+  hover-bg 2c4a80
+
+style store-caption
+  fg 8a909a
+
+# === area C (ui-packages-layout): the mockups' dark look of the Packages sidebar and
+# detail panel, the Layout sidebar, the KLayout panel and the Ctrl+K bar (
+# the tokens as literals: chrome 1d1f24, chrome2 24272d, line 2c2f36, line2 3a3e46,
+# text d0d3d8, dim 8a909a, faint 5d626b, ok 5fbf6a, bad e06c66, acc 3d7be0, input 121418).
+
+style pkg-check
+  fg 8a909a
+  hover-bg 2a2d33
+style pkg-filter
+  bg 121418
+  fg 8a909a
+  border-color 3a3e46
+style pkg-section-title
+  fg 8a909a
+style pkg-count
+  fg 8a909a
+style pkg-row
+  fg d0d3d8
+  accel-fg 8a909a
+  hover-bg 2a2d33
+style pkg-row-on
+  fg d0d3d8
+  accel-fg 5fbf6a
+  hover-bg 2a2d33
+style pkg-row-new
+  fg d0d3d8
+  accel-fg 4ea3e0
+  hover-bg 2a2d33
+style pkg-row-sel
+  fg ffffff
+  bg 2a2d33
+  accel-fg 8a909a
+style pkg-row-on-sel
+  fg ffffff
+  bg 2a2d33
+  accel-fg 5fbf6a
+style pkg-row-new-sel
+  fg ffffff
+  bg 2a2d33
+  accel-fg 4ea3e0
+style pkg-detail
+  bg 1d1f24
+style pkg-head
+  bg 1d1f24
+  border 1
+  border-color 2c2f36
+style pkg-title
+  fg d0d3d8
+style pkg-sub
+  fg 8a909a
+style pkg-action
+  fg d0d3d8
+  hover-bg 2a2d33
+style pkg-lua
+  border-color 2c2f36
+style pkg-field
+  bg 121418
+  fg d0d3d8
+  border-color 3a3e46
+style pkg-button
+  bg 24272d
+  fg d0d3d8
+  border-color 3a3e46
+  hover-bg 2a2d33
+style pkg-radio
+  fg 4ea3e0
+style pkg-dim
+  fg 8a909a
+style pkg-mono
+  fg 8a909a
+style pkg-grants
+  fg 8a909a
+style pkg-lua-file
+  fg 8a909a
+style pkg-code
+  fg c5c9d0
+style pkg-ok
+  fg 5fbf6a
+style pkg-bad
+  fg e06c66
+style pkg-new
+  fg 4ea3e0
+style lay-sub
+  fg 8a909a
+style lay-ok
+  fg 5fbf6a
+style lay-bad
+  fg e06c66
+style lay-bad-sel
+  fg d0d3d8
+  bg 2a2d33
+style lay-panel
+  bg 1d1f24
+style lay-title
+  fg d0d3d8
+style lay-mono
+  fg 8a909a
+style lay-net
+  fg ffd34d
+style lay-tr-sel
+  bg 2a2d33
+style lay-th-item
+  fg 8a909a
+style lay-th
+  fg 8a909a
+style lay-td-item
+  fg d0d3d8
+style lay-td
+  fg d0d3d8
+style lay-td-bad
+  fg e06c66
+style lay-why
+  fg 8a909a
+style lay-actions
+  border-color 2c2f36
+style lay-button
+  bg 24272d
+  fg d0d3d8
+  border-color 3a3e46
+  hover-bg 2a2d33
+style lay-ask
+  bg 1d1f24
+  border-color 3a3e46
+style lay-ask-key
+  fg 8a909a
+style lay-ask-field
+  bg 121418
+  fg ffffff
+  border-color 3a3e46
+# The highlighted (cross-probed) net on the canvas: the wire highlight, Modern Dark
+# only (xschem Classic keeps the core's default).
+style canvas.dark.hilite
+  fg ffd34d
+style lay-ask-go
+  bg 3d7be0
+  fg ffffff
+  hover-bg 4a88ea
+# === end area C

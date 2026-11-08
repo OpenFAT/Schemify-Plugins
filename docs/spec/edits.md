@@ -1,6 +1,6 @@
 # Edits, undo, journal, external changes (normative)
 
-Implements D11b, D27, D28, D34 and the `staged_edits` table required by the change drill (docs/dev/architecture.md). Owner: `doc`. Every change to design data, from any source (UI, plugin, JSON-RPC, optimizer, importer, AI assistant), is an **edit request**; `doc::apply_edits` is the only code that mutates design tables.
+Implements D11b, D27, D28, D34 and the `staged_edits` table required by the change drill (docs/dev/architecture.md). Owner: `doc`. Every change to design data, from any source (UI, plugin, Lua, optimizer, importer, AI assistant), is an **edit request**; `doc::apply_edits` is the only code that mutates design tables.
 
 ## 1. Edit requests
 
@@ -96,7 +96,7 @@ The same `merge3` backs `schemify merge-driver` (D34), so git merges and live ex
 
 ## 5. Saves
 
-`save` returns the canonical form (format spec §2) when the document is dirty (a save never rewrites files that are not dirty) and the kind rules hold (`E025` otherwise: the file would not parse); it is refused (`E044`) for read-only documents, in conflict state, or with a pending recovery. The app writes the bytes atomically (write temp + rename; on the web, OPFS write then swap) and hands them back with `saved`, which makes them the merge base and appends `save` to the journal. Edits made between `save` and `saved` stay dirty: if the saved state is still on the undo stack the journal is rewritten from it, otherwise the edits are rebased onto the written bytes as in §4.
+`save` returns the canonical form (format spec §2) when the document is dirty (a save never rewrites files that are not dirty) and the kind rules hold (`E025` otherwise: the file would not parse); it is refused (`E044`) for read-only documents, in conflict state, or with a pending recovery. The app writes the bytes atomically (write temp + rename; on the web, OPFS write then swap) and hands them back with `saved`, which makes them the merge base and appends `save` to the journal. Edits made between `save` and `saved` stay dirty: if the saved state is still on the undo stack the journal is rewritten from it, otherwise the edits are rebased onto the written bytes as in §4. The editor does the write, the journal's appends and rewrites and its deletes on one writer thread in queue order (a journal's records before the save that follows them), so a slow disk never holds a frame: the document shows `saving` and stays dirty until `saved`, a failed write leaves it dirty and the status line says why, at most one save per document is in flight (a save asked for meanwhile is written after it), and quit, closing a tab and switching project wait for the queue.
 
 ## 6. Document model notes
 
