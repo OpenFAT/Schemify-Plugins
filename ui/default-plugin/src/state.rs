@@ -28,17 +28,24 @@ pub(crate) fn render(host: &Host) -> String {
 /// One column of `table`, every row; empty when the read fails (an older host).
 fn ints<T: Scalar>(host: &Host, table: Table, column: u32) -> Vec<T> {
     let n = host.len(table).unwrap_or(0);
-    host.column::<T>(table, column, 0..n).unwrap_or_default()
+    let rows = host.column::<T>(table, column, 0..n).unwrap_or_default();
+    // Pairs the host's `read_column` contract: every row asked for, or a failed read.
+    assert!(rows.is_empty() || rows.len() == n as usize);
+    rows
 }
 
 /// One string column of `table`, every row; empty when the read fails.
 fn strs(host: &Host, table: Table, column: u32) -> Vec<String> {
     let n = host.len(table).unwrap_or(0);
-    host.strings(table, column, 0..n).unwrap_or_default()
+    let rows = host.strings(table, column, 0..n).unwrap_or_default();
+    // Pairs the host's `read_strings` contract: every row asked for, or a failed read.
+    assert!(rows.is_empty() || rows.len() == n as usize);
+    rows
 }
 
 /// `<prefix><value>\n` with `value` quoted as needed.
 fn line(t: &mut String, prefix: &str, value: &str) {
+    assert!(prefix.ends_with(' '), "the value is its own token");
     t.push_str(prefix);
     push_value(t, value);
     t.push('\n');
@@ -234,6 +241,9 @@ fn dialog(host: &Host, t: &mut String) {
 }
 
 /// `milli` milli-units as the file format writes a coordinate: `10`, `-2.5`, `0.001`.
+// ponytail: a copy of `schemify_format::format_coord`'s output rule; the guest links only
+// `schemify-abi` (size budget, ui/build.sh), and this text is status-bar display, not file
+// data. Move it into `abi::text` if a second guest needs it.
 fn coord(milli: i32) -> String {
     let mag = i64::from(milli).unsigned_abs();
     let (whole, frac) = (mag / 1000, mag % 1000);

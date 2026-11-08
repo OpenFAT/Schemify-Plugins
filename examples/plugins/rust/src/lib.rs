@@ -6,7 +6,7 @@ use schemify_abi::guest::{self, Host};
 use schemify_abi::{Event, Out, Table, col};
 
 guest::export!(on_event);
-
+// ---- private ----
 fn on_event(ev: Event<'_>, host: &Host, out: &mut Out) {
     match ev {
         // Contributions are immediate-mode: send the whole set every time.

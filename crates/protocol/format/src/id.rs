@@ -3,25 +3,25 @@
 //! id-bearing kinds; the writer generates 6.
 //!
 //! Contents:
-//! - `pub const ID_ALPHABET: &[u8; 32]`, `pub const ID_LEN_NEW: usize`
-//! - `pub(crate) const ID_LEN_MAX: usize`, `pub(crate) const FNV_OFFSET: u64`
+//! - `pub const ID_ALPHABET: &[u8; 32]`, `pub const ID_LEN_NEW: usize`, `pub const FNV_OFFSET: u64`
+//! - `pub(crate) const ID_LEN_MAX: usize`
 //! - `pub struct IdRng`, `IdRng::new`, `IdRng::for_import`
 //! - `pub struct NewId`, `NewId::as_str`
 //! - `pub(crate) struct IdRow`
 //! - `pub fn is_id(s: &str) -> bool`
 //! - `pub fn fresh_id(rng: &mut IdRng, taken: impl FnMut(&str) -> bool) -> NewId`
 //! - `pub(crate) fn id_sort_key(s: &str) -> Option<u128>`
-//! - `pub(crate) fn fnv1a64(hash: u64, bytes: &[u8]) -> u64`
+//! - `pub fn fnv1a64(hash: u64, bytes: &[u8]) -> u64`
 
 /// Crockford base32 digits in value order. Byte order equals value order, so ids sort
 /// bytewise and numerically alike.
 pub const ID_ALPHABET: &[u8; 32] = b"0123456789abcdefghjkmnpqrstvwxyz";
 /// Length of every id this crate generates (30 random bits).
 pub const ID_LEN_NEW: usize = 6;
+/// FNV-1a 64-bit offset basis: the starting `hash` of [`fnv1a64`].
+pub const FNV_OFFSET: u64 = 0xcbf2_9ce4_8422_2325;
 /// Longest id the reader accepts.
 pub(crate) const ID_LEN_MAX: usize = 13;
-/// FNV-1a 64-bit offset basis.
-pub(crate) const FNV_OFFSET: u64 = 0xcbf2_9ce4_8422_2325;
 
 /// Caller-owned random state for id generation (splitmix64). There is no global RNG:
 /// the same seed always yields the same id sequence.
@@ -104,13 +104,28 @@ pub(crate) fn id_sort_key(s: &str) -> Option<u128> {
     Some(key)
 }
 
-/// 64-bit FNV-1a, folded over `bytes` starting from `hash` (pass [`FNV_OFFSET`] to start).
-pub(crate) fn fnv1a64(mut hash: u64, bytes: &[u8]) -> u64 {
+/// Folds `bytes` into the 64-bit FNV-1a `hash`; start from [`FNV_OFFSET`].
+///
+/// The one FNV-1a in the workspace (import id seeds, netlist spec §6 specialization
+/// names, string-interning hashes). Chaining calls over `a` then `b` equals one call over
+/// `a ++ b`, so a streaming hasher keeps the running value and calls this per chunk.
+/// Not a cryptographic or DoS-resistant hash. O(`bytes.len()`), one multiply per byte.
+///
+/// ```
+/// use schemify_format::{FNV_OFFSET, fnv1a64};
+/// assert_eq!(fnv1a64(FNV_OFFSET, b"a"), 0xaf63_dc4c_8601_ec8c); // published test vector
+/// assert_eq!(fnv1a64(fnv1a64(FNV_OFFSET, b"a"), b"b"), fnv1a64(FNV_OFFSET, b"ab"));
+/// ```
+#[must_use]
+pub fn fnv1a64(hash: u64, bytes: &[u8]) -> u64 {
+    let mut h = hash;
     for &b in bytes {
-        hash ^= u64::from(b);
-        hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
+        h ^= u64::from(b);
+        h = h.wrapping_mul(0x0000_0100_0000_01b3);
     }
-    hash
+    // The empty input is the identity: what makes chained calls equal one call.
+    debug_assert!(!bytes.is_empty() || h == hash);
+    h
 }
 
 impl IdRng {

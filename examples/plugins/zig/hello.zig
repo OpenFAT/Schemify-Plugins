@@ -1,4 +1,7 @@
 //! A Schemify plugin in Zig: Tools → Count nets logs the nets with a single connection.
+//! Events in → contributions and one log record out (docs/spec/plugin-abi.md §6, §7).
+//!
+//! Contents: `pub fn onEvent(ev: schemify.Event, out: *schemify.Out) void`
 const std = @import("std");
 const schemify = @import("schemify");
 
@@ -25,6 +28,8 @@ pub fn onEvent(ev: schemify.Event, out: *schemify.Out) void {
         else => {},
     }
 }
+
+// ---- private ----
 
 fn countNets(out: *schemify.Out) void {
     const n = @min(schemify.tableLen(.nets) catch 0, pins.len);

@@ -486,11 +486,24 @@ impl<'src> Document<'src> {
         assert!(self.value_milli.len() <= self.attr_values.len());
     }
 
-    /// Returns the 1-based source line of record `r`; 0 for records built in memory.
+    /// Returns the 1-based source line of record `r`; 0 for records built in memory. Use it to
+    /// point a diagnostic or a cross-probe at the file. O(1).
     ///
     /// # Panics
     ///
     /// Panics if `r >= record_count()`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let doc = schemify_format::parse(b"schemify 1 shbench\n\ninst 0abc ./ota\n  at 0 0 R0\n  name X1\n")?;
+    /// assert_eq!(doc.record_line(0), 1); // the header
+    /// assert_eq!(doc.record_line(1), 3);
+    /// let mut built = schemify_format::Document::new(doc.kind());
+    /// built.begin_record(schemify_format::RecordKind::Inst);
+    /// assert_eq!(built.record_line(1), 0, "built in memory");
+    /// # Ok::<(), schemify_format::ParseError>(())
+    /// ```
     #[must_use]
     pub fn record_line(&self, r: u32) -> u32 {
         let line = self.record_lines[r as usize];
@@ -500,11 +513,20 @@ impl<'src> Document<'src> {
         line
     }
 
-    /// Returns the 1-based source line of attribute `a`; 0 when built in memory.
+    /// Returns the 1-based source line of attribute `a`; 0 when built in memory. O(1).
     ///
     /// # Panics
     ///
     /// Panics if `a` is not an attribute index from `attrs`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let doc = schemify_format::parse(b"schemify 1 shbench\n\ninst 0abc ./ota\n  at 0 0 R0\n  name X1\n")?;
+    /// let name = doc.find_attr(1, "name").expect("the inst has a name");
+    /// assert_eq!(doc.attr_line(name), 5);
+    /// # Ok::<(), schemify_format::ParseError>(())
+    /// ```
     #[must_use]
     pub fn attr_line(&self, a: u32) -> u32 {
         let line = self.attr_line[a as usize];

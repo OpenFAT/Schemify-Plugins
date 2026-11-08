@@ -35,3 +35,5 @@ guest = []
 
 [dev-dependencies]
 proptest.workspace = true
+# `text` (words, `push_value`) is differential-tested against the format reader (tests/codec.rs).
+schemify-format.workspace = true

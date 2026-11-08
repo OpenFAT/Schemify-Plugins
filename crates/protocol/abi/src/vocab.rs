@@ -195,7 +195,9 @@ impl Code {
     /// Returns the negated value an import returns for this error (always `< 0`).
     #[must_use]
     pub const fn neg(self) -> i32 {
-        -(self as i32)
+        let ret = -(self as i32);
+        debug_assert!(ret < 0, "codes start at 1");
+        ret
     }
 
     /// Decodes an import's `i32` return: non-negative is a value, negative is an error.
@@ -205,10 +207,22 @@ impl Code {
     /// The code for a negative return; [`Code::Range`] for a negative value that is no code
     /// (only a misbehaving host produces one).
     pub fn check(ret: i32) -> Result<u32, Code> {
-        match u32::try_from(ret) {
+        let decoded = match u32::try_from(ret) {
             Ok(value) => Ok(value),
             Err(_) => Err(Code::from_raw(ret.unsigned_abs()).unwrap_or(Code::Range)),
+        };
+        debug_assert_eq!(
+            decoded.is_ok(),
+            ret >= 0,
+            "the sign alone splits value from error"
+        );
+        // Pairs `neg`: a known code the host negated decodes back to itself.
+        if let Err(code) = decoded
+            && Code::from_raw(ret.unsigned_abs()).is_some()
+        {
+            debug_assert_eq!(code.neg(), ret);
         }
+        decoded
     }
 }
 

@@ -9,11 +9,12 @@
 //! - `pub(crate) fn reid_collisions<'src>(o, a, b: &Document<'src>) -> Option<Document<'src>>`
 
 use crate::document;
-use crate::document::{Document, NONE};
+use crate::document::{Document, NONE, Str};
 use crate::id;
 use crate::id::{FNV_OFFSET, IdRng, IdRow};
 use crate::merge::{A, B, KEEP, O};
 use crate::schema::{KeyRule, RecordKind, Ty};
+use std::collections::HashSet;
 use std::mem;
 
 /// Flags of an identity present on all sides and kept.
@@ -190,6 +191,10 @@ pub(crate) fn merge_seq(seqs: [&[u32]; 3], flags: &[u8]) -> Option<Vec<u32>> {
 /// When A and B both added a record with the same id but different content, returns a
 /// copy of `b` where that record has a fresh id (seeded from the old id, so the result
 /// is deterministic) and every id field or id reference to it is rewritten.
+///
+/// O((R + C) log R + F_B log C) for R id-keyed records, C collisions and F_B fields and
+/// values of `b`: one sort per side, one id draw per collision against a hash set of the
+/// ids drawn so far, and one rewrite pass over `b` for every collision at once.
 pub(crate) fn reid_collisions<'src>(
     o: &Document<'_>,
     a: &Document<'_>,
@@ -229,7 +234,9 @@ pub(crate) fn reid_collisions<'src>(
     }
     assert!(colliding.iter().all(|row| row.record < b.record_count()));
     let mut nb = b.clone();
-    let mut assigned: Vec<u128> = Vec::new();
+    let mut assigned: HashSet<u128> = HashSet::with_capacity(colliding.len());
+    // (old id key, new id span), sorted by the old key for the rewrite pass's lookups.
+    let mut renames: Vec<(u128, Str)> = Vec::with_capacity(colliding.len());
     for row in colliding {
         let old = b
             .field(row.record, 0)
@@ -242,9 +249,14 @@ pub(crate) fn reid_collisions<'src>(
                 || find(&ib, k).is_some()
                 || assigned.contains(&k)
         });
-        assigned.push(id::id_sort_key(new.as_str()).expect("generated ids are legal"));
-        rename_id(&mut nb, old, new.as_str());
+        let fresh =
+            assigned.insert(id::id_sort_key(new.as_str()).expect("generated ids are legal"));
+        assert!(fresh, "fresh_id avoided every id drawn before");
+        renames.push((row.key, nb.intern(new.as_str())));
     }
+    // `colliding` came sorted by key and deduplicated, so `renames` is too.
+    assert!(renames.is_sorted_by_key(|&(key, _)| key));
+    rename_ids(&mut nb, &renames);
     assert_eq!(
         nb.record_count(),
         b.record_count(),
@@ -285,20 +297,27 @@ fn group<K: Ord + Copy>(mut rows: Vec<Row<K>>) -> Vec<[u32; 3]> {
     out
 }
 
-/// Replaces every `Id`/`IdRef` field and `IdRef` attribute value equal to `old`.
-fn rename_id(doc: &mut Document<'_>, old: &str, new: &str) {
-    assert!(id::is_id(new), "the new id is legal");
-    assert_ne!(old, new, "a rename changes the id");
-    let replacement = doc.intern(new);
-    let mut renamed = 0u32;
+/// Replaces every `Id`/`IdRef` field and `IdRef` attribute value whose id is an old key of
+/// `renames` (sorted by it) with that rename's new id. One pass over the document,
+/// O(fields log renames).
+fn rename_ids(doc: &mut Document<'_>, renames: &[(u128, Str)]) {
+    assert!(!renames.is_empty(), "called with at least one collision");
+    let renamed = |doc: &Document<'_>, s: Str| {
+        let key = id::id_sort_key(doc.text(s))?;
+        let i = renames.binary_search_by_key(&key, |&(old, _)| old).ok()?;
+        Some(renames[i].1)
+    };
+    let mut rewritten = 0usize;
     for r in 0..doc.record_count() {
         let schema = doc.record_kind(r).schema();
         let fields = doc.field_range(r);
         for f in fields.clone() {
-            let is_ref = matches!(schema.fields.ty(f - fields.start), Some(Ty::Id | Ty::IdRef));
-            if is_ref && doc.text(doc.fields[f]) == old {
-                doc.fields[f] = replacement;
-                renamed += 1;
+            let ty = schema.fields.ty(f - fields.start);
+            if matches!(ty, Some(Ty::Id | Ty::IdRef))
+                && let Some(new) = renamed(doc, doc.fields[f])
+            {
+                doc.fields[f] = new;
+                rewritten += 1;
             }
         }
         for a in doc.attrs(r) {
@@ -308,12 +327,16 @@ fn rename_id(doc: &mut Document<'_>, old: &str, new: &str) {
             let values = doc.value_range(a);
             for v in values.clone() {
                 if attr.shape.ty(v - values.start) == Some(Ty::IdRef)
-                    && doc.text(doc.attr_values[v]) == old
+                    && let Some(new) = renamed(doc, doc.attr_values[v])
                 {
-                    doc.attr_values[v] = replacement;
+                    doc.attr_values[v] = new;
                 }
             }
         }
     }
-    assert!(renamed >= 1, "renamed id must define a record");
+    // Every renamed id is field 0 of a record of `doc` (a colliding add of it).
+    assert!(
+        rewritten >= renames.len(),
+        "each renamed id appears in `doc`"
+    );
 }

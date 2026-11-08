@@ -148,10 +148,13 @@ objects it changes.
 - **When:** whenever the stored pair differs from the computed one. After a docs-page edit the
   write extends that edit's undo entry and its journal record ([edits.md](edits.md) §1
   `extend`): one edit, one undo, no extra journal records (the edit's record is written out
-  after its cache ops joined it, in the same frame). Otherwise (a file opened with stale
-  caches, a plugin with a new hash, an edit elsewhere) it is its own transaction, `update
-  plugin cache`; it waits in a frame that undid or redid, because a commit would clear the
-  redo stack.
+  after its cache ops joined it, in the same frame). Otherwise, on a document the user has
+  already changed (unsaved edits: an Edit-file edit, a canvas edit), it is its own
+  transaction, `update plugin cache`; it waits in a frame that undid or redid, because a
+  commit would clear the redo stack. **A clean document is never written** (decision
+  2026-11-08): opening a file whose caches are stale, or a plugin with a new hash, leaves the
+  document clean and the file's bytes unchanged; the values shown are the plugin's, live, and
+  the stale caches are rewritten with the user's next edit of that document.
 - **A cache belongs to its expression:** every transaction the editor applies that changes a
   var's expression or a param's default or `computed` expression without touching its
   `cached` also removes that `cached` (a `put` has it stripped from the replacement), so a

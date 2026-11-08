@@ -263,7 +263,10 @@ impl<'buf> Event<'buf> {
 impl Event<'_> {
     /// Whether the wire form carries a binary payload after a NUL.
     const fn has_payload(&self) -> bool {
-        matches!(self, Event::IoDone { .. } | Event::Rejected { .. })
+        let payload = matches!(self, Event::IoDone { .. } | Event::Rejected { .. });
+        // A payload event is never a host lifecycle event (`load`, `unload`): those are bare.
+        debug_assert!(!payload || !matches!(self, Event::Load | Event::Unload));
+        payload
     }
 
     /// Writes the record line (text and LF) and returns the payload still to append. On
