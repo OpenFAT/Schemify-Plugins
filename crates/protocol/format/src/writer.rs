@@ -165,7 +165,9 @@ fn emission_order(doc: &Document<'_>) -> Vec<u32> {
         (rank, 0, kind as u8, k0, k1)
     };
     let mut order: Vec<u32> = (0..doc.record_count()).collect();
-    // Stable, and each key is computed once instead of twice per comparison.
+    // Stable, and each key is computed once instead of twice per comparison. Canonical
+    // (already sorted) input costs O(R) compares, not O(R log R): the cached-key sort runs
+    // ipnsort over (key, index) pairs, which finds one sorted run and stops.
     order.sort_by_cached_key(|&r| key(r));
     assert_eq!(order.len(), doc.record_count() as usize);
     assert_eq!(order.first(), Some(&0), "the header is written first");

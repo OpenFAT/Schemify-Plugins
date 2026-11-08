@@ -116,3 +116,39 @@ fn parse_100k_objects_within_budget() {
         "parse took {parse_time:?}"
     );
 }
+
+/// Pathological merge: ours and theirs each add the same 20k ids with different content,
+/// so every one of theirs is re-ided (spec §8 adds). Was O(C²) in the collisions C.
+#[test]
+#[ignore = "timing; meaningful only with --release"]
+fn merge3_colliding_adds() {
+    let n = 20_000;
+    let mut rng = Rng::new(9);
+    let mut used = BTreeSet::new();
+    let ids: Vec<String> = (0..n)
+        .map(|_| common::new_id(&mut rng, &mut used))
+        .collect();
+    let side = |x: i32| {
+        let mut d = Document::new(FileKind::Shbench);
+        for id in &ids {
+            d.begin_record(RecordKind::Wire);
+            d.push_field(id);
+            for c in [x, 0, x + 10_000, 0] {
+                d.push_field_coord(c);
+            }
+        }
+        d
+    };
+    let o = Document::new(FileKind::Shbench);
+    let (a, b) = (side(0), side(20_000));
+    let time = best_of(3, || format::merge3(&o, &a, &b).conflicts);
+    let merged = format::merge3(&o, &a, &b);
+    assert_eq!(merged.conflicts, 0);
+    let back = format::parse(merged.text.as_bytes()).expect("a clean merge parses");
+    assert_eq!(back.record_count() as usize, 2 * n + 1, "every add kept");
+    println!(
+        "PERF format.merge3_colliding_20k_ms {:.3}",
+        time.as_secs_f64() * 1e3
+    );
+    assert!(time < Duration::from_secs(2), "merge took {time:?}");
+}

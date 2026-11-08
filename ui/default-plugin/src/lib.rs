@@ -102,18 +102,9 @@ thread_local! {
     static KEYS_SHOWN: Cell<bool> = const { Cell::new(false) };
 }
 
-/// The `ui` set for the current toggles: the base, then the keys panel. Themes (Modern
-/// among them) are records the core composes after every plugin (`view.theme.<id>`).
-fn ui_set() -> String {
-    let mut s = String::with_capacity(UI.len() + KEYS_PANEL.len());
-    s.push_str(UI);
-    if KEYS_SHOWN.get() {
-        s.push_str(KEYS_PANEL);
-    }
-    assert!(s.len() >= UI.len());
-    s
-}
+// ---- private ----
 
+/// The entry point `export!` names: one event in → this plugin's output records.
 fn on_event(ev: Event<'_>, host: &Host, out: &mut Out) {
     match ev {
         Event::Load => {
@@ -134,4 +125,16 @@ fn on_event(ev: Event<'_>, host: &Host, out: &mut Out) {
         }
         _ => {}
     }
+}
+
+/// The `ui` set for the current toggles: the base, then the keys panel. Themes (Modern
+/// among them) are records the core composes after every plugin (`view.theme.<id>`).
+fn ui_set() -> String {
+    let mut s = String::with_capacity(UI.len() + KEYS_PANEL.len());
+    s.push_str(UI);
+    if KEYS_SHOWN.get() {
+        s.push_str(KEYS_PANEL);
+    }
+    assert!(s.len() >= UI.len());
+    s
 }

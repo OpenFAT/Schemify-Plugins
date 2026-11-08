@@ -64,7 +64,7 @@ mod writer;
 pub use diag::{Code, Diagnostic, NO_RECORD, ParseError, ParseWordError};
 pub use diff::{Change, ChangeKind, Diff, Parts, diff};
 pub use document::{Document, NONE, Texts, VERSION, is_word};
-pub use id::{ID_ALPHABET, ID_LEN_NEW, IdRng, NewId, fresh_id, is_id};
+pub use id::{FNV_OFFSET, ID_ALPHABET, ID_LEN_NEW, IdRng, NewId, fnv1a64, fresh_id, is_id};
 pub use merge::{Merged, merge3};
 pub use reader::{parse, parse_prefix};
 pub use scalar::{CoordError, Orient, format_coord, is_number, parse_coord};

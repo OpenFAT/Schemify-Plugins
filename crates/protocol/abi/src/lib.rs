@@ -90,13 +90,20 @@ const _: () = assert!(unpack(pack(0, u32::MAX)).1 == u32::MAX);
 /// it is failure, with the [`Code`] in `len`.
 #[must_use]
 pub const fn pack(ptr: u32, len: u32) -> u64 {
-    ((ptr as u64) << 32) | len as u64
+    let packed = ((ptr as u64) << 32) | len as u64;
+    // Pairs `unpack`: the guest packs, the host unpacks the same two halves.
+    debug_assert!(unpack(packed).0 == ptr);
+    debug_assert!(unpack(packed).1 == len);
+    packed
 }
 
 /// Splits a value produced by [`pack`] into `(ptr, len)`; the inverse of [`pack`].
 #[must_use]
 pub const fn unpack(packed: u64) -> (u32, u32) {
-    ((packed >> 32) as u32, packed as u32)
+    let (ptr, len) = ((packed >> 32) as u32, packed as u32);
+    // Negative space: no bit is dropped, so `pack` rebuilds exactly `packed`.
+    debug_assert!(((ptr as u64) << 32 | len as u64) == packed);
+    (ptr, len)
 }
 
 #[cfg(test)]

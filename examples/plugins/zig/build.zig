@@ -2,7 +2,7 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
-    // The library is one file inside the Schemify repository (build.zig.zon's `schemify`).
+    // The library's root file inside the Schemify repository (build.zig.zon's `schemify`).
     const schemify = b.dependency("schemify", .{}).path("crates/protocol/abi/sdk/zig/schemify.zig");
     const exe = b.addExecutable(.{
         .name = "hello",

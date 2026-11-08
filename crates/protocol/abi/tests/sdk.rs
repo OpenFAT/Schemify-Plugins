@@ -237,7 +237,7 @@ type Lib = (&'static str, fn() -> String);
 
 const LIBS: [Lib; 5] = [
     ("c/schemify.h", c),
-    ("zig/schemify.zig", zig),
+    ("zig/schemify/numbers.zig", zig),
     ("odin/schemify/schemify.odin", odin),
     ("go/schemify.go", go),
     ("assemblyscript/schemify.ts", assemblyscript),

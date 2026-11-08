@@ -1,4 +1,8 @@
-//! The Zig library's conformance guest (../../CONFORMANCE.md).
+//! The Zig library's conformance guest: events in → the log and output records
+//! ../../CONFORMANCE.md specifies, so the host test can compare every library.
+//!
+//! Contents: `pub fn onEvent(ev: schemify.Event, out: *schemify.Out) void`,
+//! `pub fn call(fn_id: u32, args: []const u8, result: *schemify.Out) schemify.Error!void`
 const std = @import("std");
 const schemify = @import("schemify");
 
@@ -38,6 +42,27 @@ pub fn onEvent(ev: schemify.Event, out: *schemify.Out) void {
     }
     out.log(.info, t.slice());
 }
+
+pub fn call(fn_id: u32, args: []const u8, result: *schemify.Out) schemify.Error!void {
+    var vals = schemify.values(args);
+    var buf: [1024]u8 = undefined;
+    switch (fn_id) {
+        0 => {
+            const a = try int(&vals);
+            const b = try int(&vals);
+            if (try vals.next(buf[0..0]) != null) return error.Parse;
+            result.print("{d}", .{a + b});
+        },
+        1 => {
+            const v = try vals.next(&buf) orelse return error.Parse;
+            var greet: [1100]u8 = undefined;
+            result.putValue(std.fmt.bufPrint(&greet, "hi {s}", .{v}) catch return error.Space);
+        },
+        else => return error.Range,
+    }
+}
+
+// ---- private ----
 
 fn echoArgs(t: *schemify.Out, args: []const u8) void {
     var buf: [4096]u8 = undefined;
@@ -81,25 +106,6 @@ fn readNets(out: *schemify.Out, t: *schemify.Out) void {
 fn errCode(r: schemify.Error![]u32) u32 {
     _ = r catch |e| return @intFromEnum(schemify.codeOf(e));
     return 0;
-}
-
-pub fn call(fn_id: u32, args: []const u8, result: *schemify.Out) schemify.Error!void {
-    var vals = schemify.values(args);
-    var buf: [1024]u8 = undefined;
-    switch (fn_id) {
-        0 => {
-            const a = try int(&vals);
-            const b = try int(&vals);
-            if (try vals.next(buf[0..0]) != null) return error.Parse;
-            result.print("{d}", .{a + b});
-        },
-        1 => {
-            const v = try vals.next(&buf) orelse return error.Parse;
-            var greet: [1100]u8 = undefined;
-            result.putValue(std.fmt.bufPrint(&greet, "hi {s}", .{v}) catch return error.Space);
-        },
-        else => return error.Range,
-    }
 }
 
 fn int(vals: *schemify.Values) schemify.Error!i64 {

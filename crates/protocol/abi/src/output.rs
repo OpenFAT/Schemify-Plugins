@@ -110,6 +110,10 @@ pub struct Out {
     text: String,
 }
 
+// `contribute_ui` and `contribute_commands` never hit `contribute`'s scope assert.
+const _: () = assert!(!Kind::Ui.scoped());
+const _: () = assert!(!Kind::Commands.scoped());
+
 impl<'chunk> Output<'chunk> {
     /// Parses one record chunk (as split by [`text::chunks`]). Values borrow from `chunk`
     /// unless they needed unescaping; bodies are copied.
@@ -356,10 +360,6 @@ impl Out {
 }
 
 // ---- private ----
-
-// `contribute_ui` and `contribute_commands` never hit `contribute`'s scope assert.
-const _: () = assert!(!Kind::Ui.scoped());
-const _: () = assert!(!Kind::Commands.scoped());
 
 impl Out {
     /// Writes `contribute <kind> [<scope>]` and `body` as verbatim lines.

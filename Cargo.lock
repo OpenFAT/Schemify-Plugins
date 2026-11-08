@@ -131,6 +131,7 @@ name = "schemify-abi"
 version = "1.0.1"
 dependencies = [
  "proptest",
+ "schemify-format",
 ]
 
 [[package]]
